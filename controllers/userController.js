@@ -2,71 +2,31 @@ const config = require('../configuration/auth.config');
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const model = require('../models') ; 
+const userService = require('../services/userService');
 const User = model.user ;
-const signup = (req, res) => {
-  if (req.password === req.confirmPassword) {
+async function signup(req, res) {
     try {
-      let user = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8),
-        role: 'admin'
-      }
-      );
-      user.save();
-      res.send({ message: "User was registered successfully!" });
+      let user = req.body ; 
+      let resultMessage =  await userService.registerUser(user) ; 
+      res.status(200).send({ message: resultMessage });
     }
     catch (error) {
-      res.status(500).send({ message: error.message });
+      console.log(error);
+      res.status(500).send(error.message); 
       return;
     }
-
-
-    /*user.save((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-      else {
-        Role.findOne({ name: "user" }, (err, role) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-  
-          user.roles = [role._id];
-          user.save((err) => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
-            }
-  
-            res.send({ message: "User was registered successfully!" });
-          });
-        }); 
-      }
-    }); */
-  }
-  else {
-    res.status(400).send({ message: "Passwords do not match" });
-  }
 };
 
-const signin = (req, res) => {
-  let cryptedPassword = bcrypt.hashSync("ariry", 8);
-  var passwordIsValid = bcrypt.compareSync(
-    "test",
-    cryptedPassword
-  );
-
-  const token = jwt.sign({ id: 1 },
-    config.secret,
-    {
-      algorithm: 'HS256',
-      allowInsecureKeySizes: true,
-      expiresIn: 3600, // 24 hours
-    });
-  res.json({ message: 'password is valid    ' + passwordIsValid + "token*** : " + token, token: token });
+async function signin(req, res) {
+  try {
+      let token =  await userService.loginUser(req.body) ; 
+      res.status(200).send({ token: token});
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
 }
 
 
