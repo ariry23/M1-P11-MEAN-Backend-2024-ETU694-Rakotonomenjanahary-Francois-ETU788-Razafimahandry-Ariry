@@ -18,9 +18,12 @@ const schema = mongoose.Schema({
     default: Date.now
   },
   dateReservation: {
+    type : Date,
+  },
+  heureDebutReservation: {
     type : String
   },
-  dateFinReservation: {
+  heureFinReservation: {
     type : String
   },
 })
