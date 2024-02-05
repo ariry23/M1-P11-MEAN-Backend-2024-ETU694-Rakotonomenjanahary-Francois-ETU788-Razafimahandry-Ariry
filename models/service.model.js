@@ -16,8 +16,8 @@ var schema = new mongoose.Schema({
     duree: {
         type : Number
     },
-    unite: {
-        type : Number
+    description: {
+        type : String
     }
 
 });
