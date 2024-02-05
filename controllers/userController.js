@@ -29,8 +29,21 @@ async function signin(req, res) {
   }
 }
 
+async function getAppointment(req, res){
+  try{
+     let messagev = await userService.getAppointment(req, res);
+     res.status(200).send({ message: messagev });
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+}
+
 
 module.exports = {
   signup,
-  signin
+  signin, 
+  getAppointment
 };

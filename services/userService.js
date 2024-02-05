@@ -1,4 +1,7 @@
 const User = require('../models/user.model');
+const reservationService = require('./reservationService');
+const horaireService =  require('./horaireService');
+const servService = require('./servService');
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 const config = require('../configuration/auth.config');
@@ -60,8 +63,30 @@ async function loginUser(req, res) {
     }
 }
 
+async function getAppointment (req, res){
+    try{
+        let resa = req.body;
+        let idService = '65c124a54888444e9ae2b8c6' //req.body.idService;
+        let idemploye = '1' //req.body.idemploye;
+        let dateDebutResa = new Date(req.body.dateReservation)
+        let hourBeginResa =  dateDebutResa.getHours()+':'+dateDebutResa.getMinutes()
+        const serv = await servService.getServiceById(idService);
+        dateDebutResa.setTime(dateDebutResa.getTime() + serv.duree*60*60*1000);
+        let hourEndResa = dateDebutResa.getHours()+':'+dateDebutResa.getMinutes();
+        var message = await reservationService.addReservation(resa, hourBeginResa, hourEndResa);
+        return  message
+        // 
+        // let hourEndResa  = ;
+        // let idemploye = req.body.idemploye;
+        // await horaireService.ß(idemploye, '', '', dateDebutResa);
+        // await  reservationService.getReservation(idemploye, dateDebutResa);
+    }catch(error){
+        throw error;
+    }
+}
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser, 
+    getAppointment
 };
