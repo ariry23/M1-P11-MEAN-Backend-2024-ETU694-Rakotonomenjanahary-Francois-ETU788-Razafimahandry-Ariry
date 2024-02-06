@@ -68,17 +68,22 @@ async function getAppointment (req, res){
         let resa = req.body;
         let idService = '65c124a54888444e9ae2b8c6' //req.body.idService;
         let idemploye = '1' //req.body.idemploye;
-        let dateDebutResa = new Date(req.body.dateReservation)
-        let hourBeginResa =  dateDebutResa.getHours()+':'+dateDebutResa.getMinutes()
+        let date = new Date(req.body.dateReservation)
+        var userTimezoneOffset = date.getTimezoneOffset() * 60000;
+        let dateResa = new Date(date.getTime()-userTimezoneOffset)
+        let dateDebutResa = new Date(date.getTime()-userTimezoneOffset)
+        console.log(dateDebutResa);
         const serv = await servService.getServiceById(idService);
-        dateDebutResa.setTime(dateDebutResa.getTime() + serv.duree*60*60*1000);
-        let hourEndResa = dateDebutResa.getHours()+':'+dateDebutResa.getMinutes();
-        var message = await reservationService.addReservation(resa, hourBeginResa, hourEndResa);
+
+        dateResa.setTime(dateResa.getTime() + serv.duree*60*60*1000);
+        let hourEndResa = dateResa;
+        await  reservationService.checkHourOfReservation(idemploye,dateDebutResa)
+        await horaireService.checkHourOfUserEmploye(idemploye, '', '', dateDebutResa)
+        var message = await reservationService.addReservation(resa, dateDebutResa, hourEndResa);
         return  message
         // 
         // let hourEndResa  = ;
         // let idemploye = req.body.idemploye;
-        // await horaireService.ß(idemploye, '', '', dateDebutResa);
         // await  reservationService.getReservation(idemploye, dateDebutResa);
     }catch(error){
         throw error;
