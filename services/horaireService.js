@@ -2,29 +2,42 @@ const horaire = require('../models/horaire.model');
 
 async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
     try{
-        let numberDate =  dateResa.getDay();
-        let usrHour = await  horaire.findOne(
+        var numberDate =  dateResa.getDay();
+        console.log(numberDate)
+        var usrHour = await  horaire.findOne(
             { 
                 iduser : vidempl, 
                 heureDebut : 
                 { 
-                    $gte : hoursDebut 
-                }, 
-                heureFin : 
-                {
-                    $lte :  heureFin
+                    $lte : '7:30' 
                 }, 
                 heureFin : 
                 { 
-                    $gte : hoursFin 
+                    $gte : '9:30' 
                 },
-                jour : /.*numberDate.*/
+                jour : { $regex : '.*' + numberDate + '.*'}
             } 
         );
-        if(usrHour.iduser == undefined){
-            throw new Error('Check another hours  our this date is weekend')
-        }
+
+        // db.table.find({
+        //     test: "a",
+        //     test1: "a",
+        //     test: { $regex: /.*/ }
+        //     }, {
+        //     _id: 1,
+        //     test: 1
+        //     })
+        console.log('userH' + usrHour)
+        // if(usrHour == null){
+        //     throw new Error('Check another hours  our this date is weekend')
+        // }
+
+        
     }catch(error){
         throw error;
     }
+}
+
+module.exports= {
+    checkHourOfUserEmploye
 }
