@@ -90,8 +90,17 @@ async function getAppointment (req, res){
     }
 }
 
+async function getStatWEmpl(req, res){
+    try{
+        await reservationService.getTempsMoyenTravailParJour();
+    }catch(error){
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser, 
-    getAppointment
+    getAppointment,
+    getStatWEmpl
 };

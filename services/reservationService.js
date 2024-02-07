@@ -83,7 +83,7 @@ async function getTempsMoyenTravailParJour(){
                 }
             }
         ]);
-        console.log('ilaina'+avgWEmpl);
+        console.log(avgWEmpl);
         return avgWEmpl;
             
     }catch(error){
