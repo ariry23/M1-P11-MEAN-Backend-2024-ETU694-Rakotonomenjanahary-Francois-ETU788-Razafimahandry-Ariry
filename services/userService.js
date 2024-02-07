@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const Role = require('../models/role.model');
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 const config = require('../configuration/auth.config');
@@ -7,6 +8,7 @@ async function registerUser(req, res) {
         const user = req;
 
         const email = user.email;
+        
         const existingUser = await User.findOne({ email: email });
         if (existingUser != null) {
             throw new Error('User with this email already exists');
@@ -17,10 +19,14 @@ async function registerUser(req, res) {
                 username: user.username,
                 password: bcrypt.hashSync(user.password, 8)
             });
+            const role = await Role.findOne({name : "customer"}) ; 
+            console.log(role) ; 
+            newUser.role = role._id ; 
             await newUser.save();
+
             return 'User registered successfully';
         }
-        throw new Error("Password and password confirmation don''t match");
+        throw new Error("Password and password confirmation don't match");
     } catch (error) {
         throw error;
     }
@@ -28,12 +34,6 @@ async function registerUser(req, res) {
 
 async function loginUser(req, res) {
     try {
-
-
-
-
-
-
         const existingUser = await User.findOne({ username: req.username });
         if (existingUser === null) {
             throw new Error("User Doesn't exists");
@@ -44,12 +44,12 @@ async function loginUser(req, res) {
             existingUser.password
         );
         if (passwordIsValid) {
-            const token = await jwt.sign({ id: existingUser.id },
+            const token = jwt.sign({ user: existingUser },
                 config.secret,
                 {
                     algorithm: 'HS256',
                     allowInsecureKeySizes: true,
-                    expiresIn: 3600, // 24 hours
+                    expiresIn: 3600, //in seconds
                 });
             return token;
         }
