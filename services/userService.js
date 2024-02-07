@@ -38,13 +38,16 @@ async function loginUser(req, res) {
         if (existingUser === null) {
             throw new Error("User Doesn't exists");
         }
-
+        
         var passwordIsValid = bcrypt.compareSync(
             req.password,
             existingUser.password
         );
+
         if (passwordIsValid) {
-            const token = jwt.sign({ user: existingUser },
+            console.log("user role id : " + existingUser.role) ; 
+            const userRole = await Role.findById(existingUser.role);
+            const token = jwt.sign({ user: existingUser , role : userRole },
                 config.secret,
                 {
                     algorithm: 'HS256',
