@@ -43,8 +43,8 @@ async function getAppointment(req, res){
 
 async function getStatWEmpl(req, res){
   try{
-     let messagev = await userService.getStatWEmpl(req, res);
-     res.status(200).send({ message: messagev });
+     let result = await userService.getStatWEmpl(req, res);
+     res.status(200).send({ result: result });
   }
   catch(error){
     console.log(error);
@@ -54,10 +54,39 @@ async function getStatWEmpl(req, res){
 }
 
 
+async  function getReservationPerDay(req, res){
+  
+
+  try{
+    let result = await userService.getReservationPerDay(req, res);
+    res.status(200).send({ result:  result });
+ }
+ catch(error){
+   console.log(error);
+   res.status(500).send(error.message); 
+   return;
+ }
+}
+
+async  function getReservationPerMonth(req, res){
+  
+
+  try{
+    let result = await userService.getReservationPerMonth(req, res);
+    res.status(200).send({ result:  result });
+ }
+ catch(error){
+   console.log(error);
+   res.status(500).send(error.message); 
+   return;
+ }
+}
 
 module.exports = {
   signup,
   signin, 
   getAppointment, 
-  getStatWEmpl
+  getStatWEmpl,
+  getReservationPerDay,
+  getReservationPerMonth
 };

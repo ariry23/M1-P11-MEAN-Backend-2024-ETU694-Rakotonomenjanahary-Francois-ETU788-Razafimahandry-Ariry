@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 //const connectionString = 'mongodb://mongo:27017/learnmongo';  //for docker
-const connectionString = 'mongodb://localhost:27017/learnmongo'
+const connectionString = 'mongodb+srv://mean_sb:9ZltGbHkYtz8gxBl@clustermean.durkqk3.mongodb.net/salonbeaute?retryWrites=true&w=majority'
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,

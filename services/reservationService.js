@@ -69,6 +69,14 @@ async function getTempsMoyenTravailParJour(){
 
         const avgWEmpl =  await Reservation.aggregate([
             {
+                $lookup: {
+                    from : "users",
+                    localField: "idempl",
+                    foreignField: "_id",
+                    as: "empl"
+                }
+            },
+            {
                 $group: {
                     _id: { idempl :"$idempl", date:{ $dateToString:{format: "%Y-%m-%d", date: "$dateheureDebutReservation"}}},
                     avg_hours: {
@@ -90,8 +98,53 @@ async function getTempsMoyenTravailParJour(){
         throw error;
     }
 }
+
+async function numberReservationPerDay(){
+    try
+    {
+        const response = await Reservation.aggregate([
+            // Créer un champ date qui extrait l'année, le mois et le jour de la date de réservation
+            { $addFields: { date: { $dateToString: { format: "%Y-%m-%d", date: "$dateheureDebutReservation" } } } },
+            // Regrouper les documents par le champ date et compter le nombre de documents dans chaque groupe
+            { $group: { _id: "$date", numberResa: { $sum: 1 } } },
+            // Trier les groupes par le champ _id dans l'ordre croissant
+            { $sort: { _id: 1 } }
+        ]);
+        //console.log(response);
+        return response;
+    }catch(error){
+        throw error;
+    }
+}
+
+
+async function numberReservationPerMonth(){
+    try
+    {
+        const response = await Reservation.aggregate([
+            // Créer un champ month qui extrait l'année et le mois de la date de réservation
+            { $addFields: { month: { $dateToString: { format: "%m-%Y", date: "$dateheureDebutReservation" } } } },
+
+            // Regrouper les documents par le champ month et compter le nombre de documents dans chaque groupe
+            { $group: { _id: "$month", numberResa: { $sum: 1 }} },
+
+            // Trier les groupes par le champ _id dans l'ordre croissant
+            { $sort: { _id: 1 } }
+        ]);
+        console.log(response);
+        return response;
+    }catch(error){
+        throw error;
+    }
+}
+
+
+            
+            
 module.exports = {
     addReservation,
     checkHourOfReservation,
-    getTempsMoyenTravailParJour
+    getTempsMoyenTravailParJour,
+    numberReservationPerDay,
+    numberReservationPerMonth
 };

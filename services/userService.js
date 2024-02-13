@@ -92,15 +92,25 @@ async function getAppointment (req, res){
 
 async function getStatWEmpl(req, res){
     try{
-        await reservationService.getTempsMoyenTravailParJour();
+        return await reservationService.getTempsMoyenTravailParJour();
     }catch(error){
         throw error;
     }
+}
+
+async function getReservationPerDay(){
+    return await reservationService.numberReservationPerDay();
+}
+
+async function getReservationPerMonth(){
+    return await reservationService.numberReservationPerMonth();
 }
 
 module.exports = {
     registerUser,
     loginUser, 
     getAppointment,
-    getStatWEmpl
+    getStatWEmpl, 
+    getReservationPerDay,
+    getReservationPerMonth,
 };

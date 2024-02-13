@@ -2,3 +2,4 @@ node_modules/
 .DS_STORE
 package.json
 package-lock.json
+configuration/database.config.jss

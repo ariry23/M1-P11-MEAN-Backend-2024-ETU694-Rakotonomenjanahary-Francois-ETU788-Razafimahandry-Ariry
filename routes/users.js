@@ -5,4 +5,6 @@ router.post('/signin', userController.signin);
 router.post('/signup', userController.signup);
 router.post('/reservation', userController.getAppointment);
 router.get('/statWempl', userController.getStatWEmpl);
+router.get('/statResaPerDay', userController.getReservationPerDay);
+router.get('/statResaPerMonth', userController.getReservationPerMonth);
 module.exports = router;
