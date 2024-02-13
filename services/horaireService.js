@@ -9,11 +9,11 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
                 iduser : vidempl, 
                 heureDebut : 
                 { 
-                    $lte : '7:30' 
+                    $lte : '7h30' 
                 }, 
                 heureFin : 
                 { 
-                    $gte : '9:30' 
+                    $lt : '9h30' 
                 },
                 jour : { $regex : '.*' + numberDate + '.*'}
             } 
@@ -27,7 +27,7 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
         //     _id: 1,
         //     test: 1
         //     })
-        console.log('userH' + usrHour)
+        console.log('userH : ' + usrHour)
         // if(usrHour == null){
         //     throw new Error('Check another hours  our this date is weekend')
         // }

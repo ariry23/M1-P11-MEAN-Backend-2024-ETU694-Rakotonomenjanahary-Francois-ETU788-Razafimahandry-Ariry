@@ -117,6 +117,16 @@ async function reservationCAPerMonth(){
     return await reservationService.reservationCAPerMonth();
 }
 
+async function beneficePerMonth(req, res){
+    let data = req.body;
+    let salaire = data.salaire;
+    let loyer = data.loyer;
+    let achat = data.piece;
+    let divers = data.divers;
+    let depense = salaire + loyer + achat + divers;
+    return await reservationService.beneficePerMonth(depense);
+}
+
 module.exports = {
     registerUser,
     loginUser, 
@@ -125,5 +135,6 @@ module.exports = {
     getReservationPerDay,
     getReservationPerMonth,
     reservationCAPerDay,
-    reservationCAPerMonth
+    reservationCAPerMonth,
+    beneficePerMonth
 };

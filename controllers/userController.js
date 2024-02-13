@@ -101,14 +101,26 @@ async  function reservationCAPerDay(req, res){
   
 
   try{
-    let result = await userService.reservationCAPerDay(req, res);
+      let result = await userService.reservationCAPerDay(req, res);
+      res.status(200).send({ result:  result });
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+}
+
+async function beneficePerMonth(req, res){
+  try{
+    let result = await userService.beneficePerMonth(req, res);
     res.status(200).send({ result:  result });
- }
- catch(error){
-   console.log(error);
-   res.status(500).send(error.message); 
-   return;
- }
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
 }
 
 module.exports = {
@@ -119,5 +131,6 @@ module.exports = {
   getReservationPerDay,
   getReservationPerMonth,
   reservationCAPerDay,
-  reservationCAPerMonth
+  reservationCAPerMonth,
+  beneficePerMonth
 };

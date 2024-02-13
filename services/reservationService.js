@@ -147,7 +147,7 @@ async function reservationCAPerDay(){
             // Créer un champ date qui extrait l'année, le mois et le jour de la date de réservation
             { $addFields: { date: { $dateToString: { format: "%Y-%m-%d", date: "$dateheureDebutReservation" } } } },
             // Regrouper les documents par le champ date et compter le nombre de documents dans chaque groupe
-            { $group: { _id: "$date", numberResa: { $sum: "$montant" } } },
+            { $group: { _id: "$date", CA: { $sum: "$montant" } } },
             // Trier les groupes par le champ _id dans l'ordre croissant
             { $sort: { _id: 1 } }
         ]);
@@ -165,8 +165,8 @@ async function reservationCAPerMonth(){
             // Créer un champ month qui extrait l'année et le mois de la date de réservation
             { $addFields: { month: { $dateToString: { format: "%m-%Y", date: "$dateheureDebutReservation" } } } },
 
-            // Regrouper les documents par le champ month et compter le nombre de documents dans chaque groupe
-            { $group: { _id: "$month", numberResa: { $sum: "$montant" }} },
+            // Regrouper les documents par le champ month et somme le montant de documents dans chaque groupe
+            { $group: { _id: "$month", CA: { $sum: "$montant" }} },
 
             // Trier les groupes par le champ _id dans l'ordre croissant
             { $sort: { _id: 1 } }
@@ -174,6 +174,37 @@ async function reservationCAPerMonth(){
         console.log(response);
         return response;
     }catch(error){
+        throw error;
+    }
+}
+
+async function beneficePerMonth(depense){
+    try {
+        
+        const benefice = await Reservation.aggregate([
+            // Créer un champ month qui extrait l'année et le mois de la date de réservation
+            { $addFields: { month: { $dateToString: { format: "%m-%Y", date: "$dateheureDebutReservation" } } } },
+            // group  by date 
+            {
+                $group: { _id: "$month",
+                    // Calculate the difference between the maximum and minimum values of montant
+                    CA: {$sum: "$montant"}
+                }
+            },
+            
+            // Calculate the difference between total and a depense
+            {
+                $addFields: {
+                    benefice: {$subtract: ["$CA", depense]}
+                }
+            },
+            // Trier les groupes par le champ _id dans l'ordre croissant
+            { $sort: { _id: 1 } }
+        ]);
+
+        console.log(benefice);
+        return benefice;
+    } catch (error) {
         throw error;
     }
 }
@@ -185,5 +216,6 @@ module.exports = {
     numberReservationPerDay,
     numberReservationPerMonth,
     reservationCAPerDay,
-    reservationCAPerMonth
+    reservationCAPerMonth,
+    beneficePerMonth
 };
