@@ -82,11 +82,42 @@ async  function getReservationPerMonth(req, res){
  }
 }
 
+
+async  function reservationCAPerMonth(req, res){
+  
+
+  try{
+    let result = await userService.reservationCAPerMonth(req, res);
+    res.status(200).send({ result:  result });
+ }
+ catch(error){
+   console.log(error);
+   res.status(500).send(error.message); 
+   return;
+ }
+}
+
+async  function reservationCAPerDay(req, res){
+  
+
+  try{
+    let result = await userService.reservationCAPerDay(req, res);
+    res.status(200).send({ result:  result });
+ }
+ catch(error){
+   console.log(error);
+   res.status(500).send(error.message); 
+   return;
+ }
+}
+
 module.exports = {
   signup,
   signin, 
   getAppointment, 
   getStatWEmpl,
   getReservationPerDay,
-  getReservationPerMonth
+  getReservationPerMonth,
+  reservationCAPerDay,
+  reservationCAPerMonth
 };

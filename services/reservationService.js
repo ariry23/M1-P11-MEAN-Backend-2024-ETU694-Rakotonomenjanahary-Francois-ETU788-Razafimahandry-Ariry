@@ -1,12 +1,14 @@
 
 const Reservation = require('../models/reservation.model') ;
 
-async function addReservation(reservation, dateDebutResa,  dateheureFinRes) {
+async function addReservation(reservation, dateDebutResa,  dateheureFinRes, amount, amountCommission) {
     try {
         const resa  =  new Reservation({
             idserv : reservation.idserv,
             userid : reservation.userid,
             idempl : reservation.idemploye,
+            montant : amount,
+            montantcommissionEmpl : amountCommission,
             dateheureFinReservation : dateheureFinRes,
             dateheureDebutReservation : dateDebutResa
         });
@@ -138,13 +140,50 @@ async function numberReservationPerMonth(){
     }
 }
 
+async function reservationCAPerDay(){
+    try
+    {
+        const response = await Reservation.aggregate([
+            // Créer un champ date qui extrait l'année, le mois et le jour de la date de réservation
+            { $addFields: { date: { $dateToString: { format: "%Y-%m-%d", date: "$dateheureDebutReservation" } } } },
+            // Regrouper les documents par le champ date et compter le nombre de documents dans chaque groupe
+            { $group: { _id: "$date", numberResa: { $sum: "$montant" } } },
+            // Trier les groupes par le champ _id dans l'ordre croissant
+            { $sort: { _id: 1 } }
+        ]);
+        //console.log(response);
+        return response;
+    }catch(error){
+        throw error;
+    }
+} 
 
-            
+async function reservationCAPerMonth(){
+    try
+    {
+        const response = await Reservation.aggregate([
+            // Créer un champ month qui extrait l'année et le mois de la date de réservation
+            { $addFields: { month: { $dateToString: { format: "%m-%Y", date: "$dateheureDebutReservation" } } } },
+
+            // Regrouper les documents par le champ month et compter le nombre de documents dans chaque groupe
+            { $group: { _id: "$month", numberResa: { $sum: "$montant" }} },
+
+            // Trier les groupes par le champ _id dans l'ordre croissant
+            { $sort: { _id: 1 } }
+        ]);
+        console.log(response);
+        return response;
+    }catch(error){
+        throw error;
+    }
+}
             
 module.exports = {
     addReservation,
     checkHourOfReservation,
     getTempsMoyenTravailParJour,
     numberReservationPerDay,
-    numberReservationPerMonth
+    numberReservationPerMonth,
+    reservationCAPerDay,
+    reservationCAPerMonth
 };

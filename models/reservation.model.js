@@ -14,10 +14,10 @@ const schema = mongoose.Schema({
     type : String
   },
   montant:{
-    type : number
+    type : Number
   },
   montantcommissionEmpl:{
-    type : number
+    type : Number
   },
   dateCreatReservation: {
     type : Date,

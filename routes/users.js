@@ -7,4 +7,6 @@ router.post('/reservation', userController.getAppointment);
 router.get('/statWempl', userController.getStatWEmpl);
 router.get('/statResaPerDay', userController.getReservationPerDay);
 router.get('/statResaPerMonth', userController.getReservationPerMonth);
+router.get('/statCAPerDay', userController.reservationCAPerDay);
+router.get('/statCAPerMonth', userController.reservationCAPerMonth);
 module.exports = router;
