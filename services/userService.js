@@ -81,7 +81,7 @@ async function getAppointment (req, res){
         let amountCommission = (amount*serv.commission)/100;
         let hourEndResa = dateResa;
         await  reservationService.checkHourOfReservation(idemploye,dateDebutResa)
-        await horaireService.checkHourOfUserEmploye(idemploye, '', '', dateDebutResa)
+        await horaireService.checkHourOfUserEmploye(idemploye, '07:30', '09:30', dateDebutResa)
         var message = await reservationService.addReservation(resa, dateDebutResa, hourEndResa, amount, amountCommission);
         return  message
         // 

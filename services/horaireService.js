@@ -9,25 +9,59 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
                 iduser : vidempl, 
                 heureDebut : 
                 { 
-                    $lte : '7h30' 
+                    $lte : "2024-02-13 07:30:00Z"
                 }, 
                 heureFin : 
                 { 
-                    $lt : '9h30' 
+                    $gte : "2024-02-13 09:30:00Z" 
                 },
                 jour : { $regex : '.*' + numberDate + '.*'}
             } 
         );
-
-        // db.table.find({
-        //     test: "a",
-        //     test1: "a",
-        //     test: { $regex: /.*/ }
-        //     }, {
-        //     _id: 1,
-        //     test: 1
-        //     })
-        console.log('userH : ' + usrHour)
+        const test = await  horaire.aggregate([
+            {
+                $project: {
+                    iduser: '$iduser',
+                    jour: '$jour',
+                    heureDebut: {
+                        $dateFromString: {
+                            dateString: { $concat: ['1970-01-01T',"$heureDebut"] },
+                            format: "%Y-%m-%dT%H:%M",
+                            timezone: "+00:00"
+                        }
+                    },
+                    heureFin: {
+                        $dateFromString: {
+                            dateString: {  $concat: ['1970-01-01T',"$heureFin"] },
+                            format: "%Y-%m-%dT%H:%M",
+                            timezone: "+00:00"
+                        }
+                    },
+                }
+            },
+            {
+                $match: {
+                    iduser : vidempl, 
+                    heureDebut: {
+                        $lte: new Date("1970-01-01T"+hoursDebut+":00Z")
+                    },
+                    heureFin:{
+                         $gte: new Date("1970-01-01T"+hoursFin+":00Z")
+                    },
+                    jour : { $regex : '.*' + numberDate + '.*'}
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    heureDebut: 1,
+                    heureFin: 1,
+                    iduser: 1,
+                    jour: 1
+                }
+            }
+        ])
+        console.log(test)
         // if(usrHour == null){
         //     throw new Error('Check another hours  our this date is weekend')
         // }
