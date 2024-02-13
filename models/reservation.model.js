@@ -13,6 +13,12 @@ const schema = mongoose.Schema({
   idempl:{
     type : String
   },
+  montant:{
+    type : number
+  },
+  montantcommissionEmpl:{
+    type : number
+  },
   dateCreatReservation: {
     type : Date,
     default: Date.now
