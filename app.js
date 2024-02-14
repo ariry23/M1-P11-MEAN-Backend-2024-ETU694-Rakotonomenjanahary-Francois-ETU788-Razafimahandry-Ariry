@@ -7,9 +7,14 @@ const db = require('./configuration/database.config.js') ;
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var personnelRouter = require('./routes/personnel');
+var emailRouter = require('./routes/email');
 const cors = require('cors');
 
 var app = express();
+
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
 app.use(cors());
 const corsOptions = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
@@ -39,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
 app.use('/personnel', personnelRouter);
+app.use('/email', emailRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
