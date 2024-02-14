@@ -93,7 +93,7 @@ async function getTempsMoyenTravailParJour(){
                 }
             }
         ]);
-        console.log(avgWEmpl);
+        // console.log(avgWEmpl);
         return avgWEmpl;
             
     }catch(error){

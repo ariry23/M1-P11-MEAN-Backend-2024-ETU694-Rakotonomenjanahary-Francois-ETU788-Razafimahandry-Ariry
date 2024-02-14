@@ -95,7 +95,8 @@ async function getAppointment (req, res){
 
 async function getStatWEmpl(req, res){
     try{
-        return await reservationService.getTempsMoyenTravailParJour();
+        return await horaireService.getTempsMoyenTravailParJour();
+        // return await reservationService.getTempsMoyenTravailParJour();
     }catch(error){
         throw error;
     }
