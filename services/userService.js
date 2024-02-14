@@ -6,9 +6,7 @@ const config = require('../configuration/auth.config');
 async function registerUser(req, res) {
     try {
         const user = req;
-
         const email = user.email;
-        
         const existingUser = await User.findOne({ email: email });
         if (existingUser != null) {
             throw new Error('User with this email already exists');

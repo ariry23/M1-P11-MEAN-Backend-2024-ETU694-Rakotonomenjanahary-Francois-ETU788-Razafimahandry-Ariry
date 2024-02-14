@@ -31,7 +31,6 @@ async function signin(req, res) {
   }
 }
 
-
 module.exports = {
   signup,
   signin
