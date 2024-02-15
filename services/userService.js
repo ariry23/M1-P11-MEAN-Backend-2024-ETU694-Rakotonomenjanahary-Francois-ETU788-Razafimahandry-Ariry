@@ -1,5 +1,8 @@
 const User = require('../models/user.model');
 const Role = require('../models/role.model');
+const reservationService = require('./reservationService');
+const horaireService =  require('./horaireService');
+const servService = require('./servService');
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 const config = require('../configuration/auth.config');
@@ -63,8 +66,75 @@ async function loginUser(req, res) {
     }
 }
 
+async function getAppointment (req, res){
+    try{
+        let resa = req.body;
+        let idService = req.body.idserv;
+        let idemploye = req.body.idemploye;
+        let date = new Date(req.body.dateReservation)
+        var userTimezoneOffset = date.getTimezoneOffset() * 60000;
+        let dateResa = new Date(date.getTime()-userTimezoneOffset)
+        let dateDebutResa = new Date(date.getTime()-userTimezoneOffset)
+        console.log(dateDebutResa);
+        const serv = await servService.getServiceById(idService);
+
+        dateResa.setTime(dateResa.getTime() + serv.duree*60*60*1000);
+
+        let  amount = serv.prix;
+        let amountCommission = (amount*serv.commission)/100;
+        let hourEndResa = dateResa;
+        await  reservationService.checkHourOfReservation(idemploye,dateDebutResa)
+        await horaireService.checkHourOfUserEmploye(idemploye, '07:30', '09:30', dateDebutResa)
+        var message = await reservationService.addReservation(resa, dateDebutResa, hourEndResa, amount, amountCommission);
+        return  message;
+    }catch(error){
+        throw error;
+    }
+}
+
+async function getStatWEmpl(req, res){
+    try{
+        return await horaireService.getTempsMoyenTravailParJour();
+        // return await reservationService.getTempsMoyenTravailParJour();
+    }catch(error){
+        throw error;
+    }
+}
+
+async function getReservationPerDay(){
+    return await reservationService.numberReservationPerDay();
+}
+
+async function getReservationPerMonth(){
+    return await reservationService.numberReservationPerMonth();
+}
+
+async function reservationCAPerDay(){
+    return await reservationService.reservationCAPerDay();
+}
+
+async function reservationCAPerMonth(){
+    return await reservationService.reservationCAPerMonth();
+}
+
+async function beneficePerMonth(req, res){
+    let data = req.body;
+    let salaire = data.salaire;
+    let loyer = data.loyer;
+    let achat = data.piece;
+    let divers = data.divers;
+    let depense = salaire + loyer + achat + divers;
+    return await reservationService.beneficePerMonth(depense);
+}
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser, 
+    getAppointment,
+    getStatWEmpl, 
+    getReservationPerDay,
+    getReservationPerMonth,
+    reservationCAPerDay,
+    reservationCAPerMonth,
+    beneficePerMonth
 };
