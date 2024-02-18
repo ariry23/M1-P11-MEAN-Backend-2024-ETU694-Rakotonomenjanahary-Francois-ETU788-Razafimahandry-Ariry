@@ -48,9 +48,9 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
             }
         ])
         console.log(usrHour)
-        // if(usrHour == null){
-        //     throw new Error('Check another hours  our this date is weekend')
-        // }
+        if(usrHour.length == 0){
+            throw new Error('Check another hours  our this date is weekend')
+        }
 
         
     }catch(error){

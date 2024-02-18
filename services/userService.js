@@ -74,6 +74,7 @@ async function getAppointment (req, res){
         let dateResa = new Date(date.getTime()-userTimezoneOffset)
         let dateDebutResa = new Date(date.getTime()-userTimezoneOffset)
         console.log(dateDebutResa);
+        let heureDebutResa = dateDebutResa.getHours()+':'+dateDebutResa.getMinutes();
         const serv = await servService.getServiceById(idService);
 
         dateResa.setTime(dateResa.getTime() + serv.duree*60*60*1000);
@@ -81,8 +82,9 @@ async function getAppointment (req, res){
         let  amount = serv.prix;
         let amountCommission = (amount*serv.commission)/100;
         let hourEndResa = dateResa;
+        let heureFinResa = dateResa.getHours()+':'+dateResa.getMinutes();
         await  reservationService.checkHourOfReservation(idemploye,dateDebutResa)
-        await horaireService.checkHourOfUserEmploye(idemploye, '07:30', '09:30', dateDebutResa)
+        await horaireService.checkHourOfUserEmploye(idemploye, heureDebutResa, heureFinResa, dateDebutResa)
         var message = await reservationService.addReservation(resa, dateDebutResa, hourEndResa, amount, amountCommission);
         return  message;
     }catch(error){
@@ -125,6 +127,15 @@ async function beneficePerMonth(req, res){
     return await reservationService.beneficePerMonth(depense);
 }
 
+async function getResaByUser(req, res){
+    try {
+        let vidempl = req.body.idempl;
+        return await reservationService.getResaByUser(vidempl);
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser, 
@@ -134,5 +145,6 @@ module.exports = {
     getReservationPerMonth,
     reservationCAPerDay,
     reservationCAPerMonth,
-    beneficePerMonth
+    beneficePerMonth,
+    getResaByUser
 };

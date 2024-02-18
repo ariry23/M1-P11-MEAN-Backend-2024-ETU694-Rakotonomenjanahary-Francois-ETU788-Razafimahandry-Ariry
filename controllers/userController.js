@@ -125,6 +125,17 @@ async function beneficePerMonth(req, res){
   }
 }
 
+async function getResaByUser(req, res ){
+  try {
+    let result = await userService.getResaByUser(req, res);
+    res.status(200).send({ "message" : "Liste des reservations par employee" , "data" : result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+}
+
 module.exports = {
   signup,
   signin, 
@@ -134,5 +145,6 @@ module.exports = {
   getReservationPerMonth,
   reservationCAPerDay,
   reservationCAPerMonth,
-  beneficePerMonth
+  beneficePerMonth,
+  getResaByUser
 };
