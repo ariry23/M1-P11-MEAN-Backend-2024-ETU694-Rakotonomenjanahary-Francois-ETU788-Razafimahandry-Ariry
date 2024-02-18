@@ -62,10 +62,11 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
 async function getTempsMoyenTravailParJour(){
     try {
         const timeAvgW = await horaire.aggregate([
+            { $addFields: { "userId": { $toObjectId: "$iduser" }}},
             {
                 $lookup: {
                     from: "users",
-                    localField: "iduser",
+                    localField: "userId",
                     foreignField: "_id",
                     as: "user"
                 }
