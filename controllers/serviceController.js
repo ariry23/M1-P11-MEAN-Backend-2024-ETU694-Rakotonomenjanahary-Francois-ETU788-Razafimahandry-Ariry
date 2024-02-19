@@ -1,4 +1,5 @@
 
+
 const model = require('../models') ; 
 const personnelService = require('../services/personnelService');
 const User = model.user ;
@@ -40,8 +41,11 @@ async function ajout(req, res) {
             prix: req.body.prix,
             commission: req.body.commission , 
             duree : req.body.duree, 
-            description : req.body.description
+            description : req.body.description , 
+           // image : req.body.image
         });
+        //console.log(req.file) ; 
+        
         await newService.save(); 
         res.status(200).send({ "message" : "Service enregistré avec success! " });
     }
