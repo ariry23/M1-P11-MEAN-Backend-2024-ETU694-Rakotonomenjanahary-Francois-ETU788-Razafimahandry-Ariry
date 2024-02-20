@@ -11,4 +11,6 @@ router.get('/statCAPerDay', userController.reservationCAPerDay);
 router.get('/statCAPerMonth', userController.reservationCAPerMonth);
 router.post('/statBenefices', userController.beneficePerMonth);
 router.post('/list-employee', userController.getResaByUser);
+router.post('/horaire',userController.addOrUpdateHoraire);
+router.post('/mon-horaire',userController.findHoraireUser);
 module.exports = router;

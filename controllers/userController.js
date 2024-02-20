@@ -4,6 +4,7 @@ var bcrypt = require("bcryptjs");
 const model = require('../models') ; 
 const userService = require('../services/userService');
 const User = model.user ;
+const Horaire = model.horaire; 
 async function signup(req, res) {
     try { 
       let user = req.body ; 
@@ -136,6 +137,29 @@ async function getResaByUser(req, res ){
   }
 }
 
+async function addOrUpdateHoraire(req, res) {
+  try {
+      let message = await userService.addOrUpdateHoraire(req, res)
+      res.status(200).send({ "message" : message});
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+};
+
+async function findHoraireUser(req, res){
+  try {
+    let iduser = req.body.iduser;
+    return await Horaire.findOne({'iduser': iduser})
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+}
+
 module.exports = {
   signup,
   signin, 
@@ -146,5 +170,7 @@ module.exports = {
   reservationCAPerDay,
   reservationCAPerMonth,
   beneficePerMonth,
-  getResaByUser
+  getResaByUser,
+  addOrUpdateHoraire,
+  findHoraireUser
 };

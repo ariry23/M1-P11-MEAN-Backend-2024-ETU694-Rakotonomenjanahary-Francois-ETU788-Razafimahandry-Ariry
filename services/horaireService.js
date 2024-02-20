@@ -264,7 +264,40 @@ async function getTempsMoyenTravailParJour(){
         throw error;
     }
 }
+
+
+async function addOrUpdateHoraire(req, res){
+    try {
+        let horaire1;
+        let message = 'Ajout horaire avec succes';
+        var dateDebut = new Date('1973-12-12T'+req.body.heureDebut);
+        var dateFin = new Date('1973-12-12T'+req.body.heureFin);
+        if(dateDebut.getTime()>= dateFin.getTime()){
+            throw new Error('Erreur horaire. Verifier s\'il vous plait');
+        }
+        if(req.body._id){
+            horaire1 = await horaire.findOne({"_id" : req.body._id}) ; 
+            horaire1.iduser = req.body.iduser
+            horaire1.heureDebut = req.body.heureDebut ; 
+            horaire1.heureFin = req.body.heureFin ;
+            horaire1.jour = req.body.jour;
+            message = 'Mise a jour succes'
+        }else{
+            horaire1 = new horaire({
+                iduser: req.body.iduser,
+                heureDebut: req.body.heureDebut ,
+                heureFin: req.body.heureFin,
+                jour: req.body.jour
+            });
+        }
+        await horaire1.save() ; 
+        return message;
+    } catch (error) {
+        throw error;
+    }
+}
 module.exports= {
     checkHourOfUserEmploye,
-    getTempsMoyenTravailParJour
+    getTempsMoyenTravailParJour,
+    addOrUpdateHoraire
 }

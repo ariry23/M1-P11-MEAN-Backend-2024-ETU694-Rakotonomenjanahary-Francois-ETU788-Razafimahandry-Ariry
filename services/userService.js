@@ -136,6 +136,14 @@ async function getResaByUser(req, res){
     }
 }
 
+async function  addOrUpdateHoraire(req, res){
+    try {
+        return await horaireService.addOrUpdateHoraire(req, res);
+    } catch (error) {
+        throw error
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser, 
@@ -146,5 +154,6 @@ module.exports = {
     reservationCAPerDay,
     reservationCAPerMonth,
     beneficePerMonth,
-    getResaByUser
+    getResaByUser,
+    addOrUpdateHoraire
 };
