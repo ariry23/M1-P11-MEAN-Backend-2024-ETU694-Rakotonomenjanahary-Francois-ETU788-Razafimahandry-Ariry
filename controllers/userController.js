@@ -4,6 +4,7 @@ var bcrypt = require("bcryptjs");
 const model = require('../models') ; 
 const userService = require('../services/userService');
 const User = model.user ;
+const Reservation = model.reservation ;
 async function signup(req, res) {
     try { 
       let user = req.body ; 
@@ -136,6 +137,21 @@ async function getResaByUser(req, res ){
   }
 }
 
+
+
+async function getResaByCustomer(req, res ){
+  try {
+    let reservationList =  await Reservation.find({"userid" : req.body.userid});    
+    res.status(200).send({ "message" : "Liste des reservations par employee" , "data" : reservationList });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+}
+
+
+
 module.exports = {
   signup,
   signin, 
@@ -146,5 +162,6 @@ module.exports = {
   reservationCAPerDay,
   reservationCAPerMonth,
   beneficePerMonth,
-  getResaByUser
+  getResaByUser , 
+  getResaByCustomer
 };

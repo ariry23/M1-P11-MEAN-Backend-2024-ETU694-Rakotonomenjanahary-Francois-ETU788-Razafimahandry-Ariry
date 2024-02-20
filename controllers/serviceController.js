@@ -1,9 +1,11 @@
 
 
+const { request } = require('express');
 const model = require('../models') ; 
 const personnelService = require('../services/personnelService');
 const User = model.user ;
 const Service = model.service ; 
+const Reservation = model.reservation ; 
 async function list(req, res) {
     try { 
         let serviceList =  await Service.find({}) ;     
@@ -71,9 +73,34 @@ async function suprimer(req, res) {
     }
 };
 
+
+async function reserver(req, res) {
+    try { 
+        console.log(req.body.dateReservation) ; 
+        const reservation = new Reservation({
+            idserv : req.body.idserv,
+            userid: req.body.userid,
+            idempl: req.body.idempl,
+            dateReservation: new Date(req.body.dateReservation) ,
+         
+        }) ; 
+
+        console.log(req.body) ; 
+        await reservation.save() ;
+        res.status(200).send({ "message" : "reservation créé avec success"});
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
+
+
 module.exports = {
     list , 
     update , 
     ajout , 
-    suprimer
+    suprimer , 
+    reserver
 };

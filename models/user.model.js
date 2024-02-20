@@ -18,8 +18,12 @@ var schema = new mongoose.Schema({
     role: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Role"
+    } , 
+    solde: 
+    {
+        type : Number , 
+        default: 60000
     }
-      
 });
 var user = new mongoose.model('users', schema);
 module.exports = user;

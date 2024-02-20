@@ -29,6 +29,9 @@ const schema = mongoose.Schema({
   dateheureFinReservation: {
     type : Date
   },
+  nombrePersonne: {
+    type : Number
+  },
 })
 
 var reservation = new mongoose.model('reservation', schema);

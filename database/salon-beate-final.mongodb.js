@@ -116,6 +116,6 @@ db.getCollection("users").find({});
 db.getCollection("users").deleteOne({"email" :"emp@test.com" }) ; 
 db.getCollection("roles").deleteMany({});
 
-db.getCollection("services").find({});
+db.getCollection("reservations").find({});
 
 
