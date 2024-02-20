@@ -3,7 +3,8 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const model = require('../models') ; 
 const userService = require('../services/userService');
-const User = model.user ;
+const User = model.user ; 
+const Service = model.service ; 
 const Reservation = model.reservation ;
 async function signup(req, res) {
     try { 
@@ -141,8 +142,20 @@ async function getResaByUser(req, res ){
 
 async function getResaByCustomer(req, res ){
   try {
-    let reservationList =  await Reservation.find({"userid" : req.body.userid});    
-    res.status(200).send({ "message" : "Liste des reservations par employee" , "data" : reservationList });
+    let reservationList =  await Reservation.find({"userid" : req.body.userid});   
+    let newList = []; 
+    for (let i = 0; i < reservationList.length; i++) {
+        let service = await  Service.findById(reservationList[i].idserv);
+        let employe = await User.findOne({"_id" :  reservationList[i].userid})
+       reservationList[i]["service"] = service; 
+      
+        let res = {...reservationList[i]} ; 
+        res["service"] = service ; 
+        console.log(res) ; 
+        newList.push(res) ;
+    }
+    //console.log(reservationList) ; 
+    res.status(200).send({ "message" : "Liste des reservations du client" , "data" : reservationList });
   } catch (error) {
     console.log(error);
     res.status(500).send(error.message); 

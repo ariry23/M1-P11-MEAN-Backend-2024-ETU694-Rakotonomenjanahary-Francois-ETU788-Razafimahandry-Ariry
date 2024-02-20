@@ -31,7 +31,11 @@ const schema = mongoose.Schema({
   },
   nombrePersonne: {
     type : Number
-  },
+  }, 
+  statusPaiement : {
+    type : String , 
+    default: "non paye"
+  }
 })
 
 var reservation = new mongoose.model('reservation', schema);

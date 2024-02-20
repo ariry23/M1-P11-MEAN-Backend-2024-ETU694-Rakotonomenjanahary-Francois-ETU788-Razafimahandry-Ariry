@@ -6,6 +6,7 @@ const personnelService = require('../services/personnelService');
 const User = model.user ;
 const Service = model.service ; 
 const Reservation = model.reservation ; 
+const Paiement = model.paiement ; 
 async function list(req, res) {
     try { 
         let serviceList =  await Service.find({}) ;     
@@ -80,9 +81,52 @@ async function reserver(req, res) {
         const reservation = new Reservation({
             idserv : req.body.idserv,
             userid: req.body.userid,
-            idempl: req.body.idempl,
+            idempl: req.body.idemploye,
             dateReservation: new Date(req.body.dateReservation) ,
-         
+            nombrePersonne : req.body.nombrePersonne , 
+        }) ; 
+
+        console.log(req.body) ; 
+        await reservation.save() ;
+        res.status(200).send({ "message" : "reservation créé avec success"});
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
+
+
+
+async function pay(req, res) {
+    try { 
+        let user = await User.findOne({"_id" : req.body.userid}) ; 
+        /* logique na paiement*/ 
+        const paiement = new Paiement({
+            nombrePersonne : req.body.nombrePersonne
+        }) ; 
+        await paiement.save() ;
+        res.status(200).send({ "message" : "reservation créé avec success"});
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
+
+
+
+async function listPay(req, res) {
+    try { 
+        console.log(req.body.dateReservation) ; 
+        const reservation = new Reservation({
+            idserv : req.body.idserv,
+            userid: req.body.userid,
+            idempl: req.body.idemploye,
+            dateReservation: new Date(req.body.dateReservation) ,
+            nombrePersonne : req.body.nombrePersonne , 
         }) ; 
 
         console.log(req.body) ; 
@@ -102,5 +146,6 @@ module.exports = {
     update , 
     ajout , 
     suprimer , 
-    reserver
+    reserver , 
+    pay
 };

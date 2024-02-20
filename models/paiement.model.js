@@ -4,18 +4,26 @@ var schema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    reservation: {
+    service: {
         type: String,
         required: true
     },
-    utilisateur: {
+    nombrePersonne: {
+        type: String,
+        required: true
+    },
+    sender: {
         type: String,
         required: true,
     } , 
-    destinataire: {
+    receiver: {
         type: String,
         required: true,
-    } ,
+    } , 
+    montant: {
+        type : Number,
+        required: true 
+    }
 });
 var paiement = new mongoose.model('paiements', schema);
 module.exports = paiement;
