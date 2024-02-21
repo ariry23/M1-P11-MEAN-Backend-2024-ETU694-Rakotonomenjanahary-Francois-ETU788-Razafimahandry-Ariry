@@ -142,18 +142,74 @@ async function getResaByUser(req, res ){
 
 async function getResaByCustomer(req, res ){
   try {
-    let reservationList =  await Reservation.find({"userid" : req.body.userid});   
-    let newList = []; 
-    for (let i = 0; i < reservationList.length; i++) {
-        let service = await  Service.findById(reservationList[i].idserv);
-        let employe = await User.findOne({"_id" :  reservationList[i].userid})
-       reservationList[i]["service"] = service; 
+    let reservationList =  await Reservation.aggregate([
+      { $addFields: { "idempl": { $toObjectId: "$idempl" }}},
+    
+      {
+          $lookup: {
+              from: "users",
+              localField: "idempl",
+              foreignField: "_id",
+              as: "customer"
+          }
+      },
+      {
+          $unwind: "$customer"
+      },
+      {
+          $project: {
+              idempl: 1,
+              idserv:1 , 
+              name: "$customer.username",
+              email:"$customer.email",
+              /*dateDebutResa: { 
+                  $dateToString :{
+                      date:"$dateheureDebutReservation",
+                      format: "%d-%m-%Y %H:%M"
+                  }
+              },
+              dateFinResa: { 
+                  $dateToString :{
+                      date:"$dateheureFinReservation",
+                      format: "%d-%m-%Y %H:%M"
+                  }
+              }, */
+          }
+      },
+      { $addFields: { "idserv": { $toObjectId: "$idserv" }}},
+      {
+        $lookup: {
+            from: "services",
+            localField: "idserv",
+            foreignField: "_id",
+            as: "services"
+          }
+      },
+      {
+          $unwind: "$service"
+      },
+      {
+        $project: {
+            idempl: 1,
+            name: "$username",
+            email:"$email",
+           /* dateDebutResa: "$dateDebutResa",
+            dateFinResa: "$dateFinResa" , */
       
-        let res = {...reservationList[i]} ; 
-        res["service"] = service ; 
-        console.log(res) ; 
-        newList.push(res) ;
-    }
+        }
+    },/*
+      {
+          $match: {
+              userid : req.body.userid, 
+          }
+      },*/
+  ]);
+
+
+
+
+
+    
     //console.log(reservationList) ; 
     res.status(200).send({ "message" : "Liste des reservations du client" , "data" : reservationList });
   } catch (error) {

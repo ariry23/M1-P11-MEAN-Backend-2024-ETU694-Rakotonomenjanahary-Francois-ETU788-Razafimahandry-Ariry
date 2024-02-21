@@ -7,6 +7,9 @@ const User = model.user ;
 const Service = model.service ; 
 const Reservation = model.reservation ; 
 const Paiement = model.paiement ; 
+const server = require('../bin/www');
+const WebSocket = require('ws');
+
 async function list(req, res) {
     try { 
         let serviceList =  await Service.find({}) ;     
@@ -116,7 +119,35 @@ async function pay(req, res) {
     }
 };
 
+async function offre(req, res) {
+    try { 
+        const wss = new WebSocket.Server({ server });
 
+        wss.on('connection', (ws) => {
+            console.log('Client connected');
+          
+            ws.on('message', (message) => {
+              console.log(`Received message: ${message}`);
+          
+              // Example: Broadcast the received message to all clients
+              wss.clients.forEach((client) => {
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                  client.send(message);
+                }
+              });
+            });
+          
+            ws.on('close', () => {
+              console.log('Client disconnected');
+            });
+          });
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
 
 async function listPay(req, res) {
     try { 
@@ -147,5 +178,6 @@ module.exports = {
     ajout , 
     suprimer , 
     reserver , 
-    pay
+    pay , 
+    offre
 };
