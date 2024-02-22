@@ -136,6 +136,15 @@ async function getResaByUser(req, res) {
     }
 }
 
+async function getAllTaskDayByUser(req, res) {
+    try {
+        let vidempl = req.body.idempl;
+        return await reservationService.getAllTaskDayByUser(vidempl);
+    } catch (error) {
+        throw error;
+    }
+}
+
 async function addOrUpdateHoraire(req, res) {
     try {
         let rquest = req.body;
