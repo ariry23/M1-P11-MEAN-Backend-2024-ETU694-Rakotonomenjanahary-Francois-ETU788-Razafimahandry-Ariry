@@ -152,7 +152,8 @@ async function addOrUpdateHoraire(req, res) {
 async function findHoraireUser(req, res){
   try {
     let iduser = req.body.iduser;
-    return await Horaire.findOne({'iduser': iduser})
+    let result =  await Horaire.findOne({'iduser': iduser})
+    res.status(200).send({'message': 'Horaire personnel', "data" : result});
   } catch (error) {
     console.log(error);
     res.status(500).send(error.message); 
