@@ -10,6 +10,7 @@ db.role = require("./role.model");
 db.service = require("./service.model");
 db.reservation = require("./reservation.model");
 db.horaire = require("./horaire.model");
+db.preference = require("./preference.model");
 
 db.ROLES = ["user", "role"];
 

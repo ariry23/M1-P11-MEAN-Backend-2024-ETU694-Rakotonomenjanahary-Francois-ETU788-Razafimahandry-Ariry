@@ -177,5 +177,6 @@ module.exports = {
     reservationCAPerMonth,
     beneficePerMonth,
     getResaByUser,
-    addOrUpdateHoraire
+    addOrUpdateHoraire,
+    getAllTaskDayByUser
 };

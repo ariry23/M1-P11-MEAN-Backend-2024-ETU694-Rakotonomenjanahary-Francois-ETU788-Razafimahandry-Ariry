@@ -229,10 +229,7 @@ async function beneficePerMonth(depense){
 
 async function getResaByUser(vidempl){
     try {
-        console.log(new Date())
-        let date = new Date();
-        var userTimezoneOffset = date.getTimezoneOffset() * 60000;
-        let vdateResa = new Date(date.getTime()-userTimezoneOffset)
+        console.log(vidempl);
         const Resa = await Reservation.aggregate([
             { $addFields: { "userId": { $toObjectId: "$userid" }}},
             {
@@ -286,8 +283,7 @@ async function getAllTaskDayByUser(vidempl){
     try {
         console.log(new Date())
         let date = new Date();
-        var userTimezoneOffset = date.getTimezoneOffset() * 60000;
-        let vdateResa = new Date(date.getTime()-userTimezoneOffset)
+        var vdateResaString = date.toISOString().slice(0, 10);
         const Resa = await Reservation.aggregate([
             { $addFields: { "userId": { $toObjectId: "$userid" }}},
             {
@@ -318,26 +314,30 @@ async function getAllTaskDayByUser(vidempl){
                             format: "%d-%m-%Y %H:%M"
                         }
                     },
-                    { 
-                    	mntCom:{
-                    			$divide :[
-                    				{
-                    			 		$multiply : [ 
-                    						"$montantcommissionEmpl" , 100
-                    					]
-                    				}, 
-                    				"$montant"
-                    			]
-    	                }
+                    mntCom:{
+                            $divide :[
+                                {
+                                    $multiply : [ 
+                                        "$montantcommissionEmpl" , 100
+                                    ]
+                                }, 
+                                "$montant"
+                            ]
                     },
-                    dateResa : "$dateheureDebutReservation",
+                    
+                    dateResa : { 
+                        $dateToString :{
+                            date:"$dateheureFinReservation",
+                            format: "%Y-%m-%d"
+                        }
+                    },
                 }
             },
             {
                 $match: {
                     idempl : vidempl, 
                     dateResa :{
-                        $eq : vdateResa
+                        $eq : vdateResaString
                     }
                 }
             },
@@ -358,5 +358,6 @@ module.exports = {
     reservationCAPerDay,
     reservationCAPerMonth,
     beneficePerMonth,
-    getResaByUser
+    getResaByUser,
+    getAllTaskDayByUser
 };

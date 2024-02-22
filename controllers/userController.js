@@ -183,5 +183,6 @@ module.exports = {
   beneficePerMonth,
   getResaByUser,
   addOrUpdateHoraire,
-  findHoraireUser
+  findHoraireUser,
+  getAllTaskDayByUser
 };
