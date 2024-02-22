@@ -163,8 +163,7 @@ async function findHoraireUser(req, res){
 
 async function getAllTaskDayByUser(req, res) {
     try {
-        let vidempl = req.body.idempl;
-        let result =  await reservationService.getAllTaskDayByUser(req, res);
+        let result =  await userService.getAllTaskDayByUser(req, res);
         res.status(200).send({'message': 'List task Day', "data" : result});
     } catch (error) {
         res.status(500).send(error.message); 
