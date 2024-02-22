@@ -263,6 +263,18 @@ async function getResaByUser(vidempl){
                             format: "%d-%m-%Y %H:%M"
                         }
                     },
+                    { 
+                    	mntCom:{
+                    			$divide :[
+                    				{
+                    			 		$multiply : [ 
+                    						"$montantcommissionEmpl" , 100
+                    					]
+                    				}, 
+                    				"$montant"
+                    			]
+    	                }
+                    },
                     dateResa : "$dateheureDebutReservation",
                 }
             },
@@ -270,7 +282,7 @@ async function getResaByUser(vidempl){
                 $match: {
                     idempl : vidempl, 
                     dateResa :{
-                        $gte : vdateResa
+                        $eq : vdateResa
                     }
                 }
             },
