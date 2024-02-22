@@ -19,14 +19,32 @@ async function addReservation(reservation, dateDebutResa,  dateheureFinRes, amou
     }
 }
 
-async function checkHourOfReservation(vidempl, vdateDebutResa){
+async function checkHourOfReservation(vidempl, vdateDebutResa, vdateFinResa){
     try{
-        var condition = { idempl :  vidempl,  dateDebutResa : { $lte :  vdateDebutResa }, dateFinResa : { $gte: vdateDebutResa }};
+       // var condition = { idempl :  vidempl,  dateDebutResa : { $lte :  vdateDebutResa }, dateFinResa : { $gte: vdateDebutResa }};
+        var condition = {
+            idempl :  vidempl,  
+            
+            $or : [
+                {
+                    dateheureDebutReservation: {
+                        $gte: vdateDebutResa,
+                        $lte: vdateFinResa
+                    },
+                },
+                {
+                    dateheureFinReservation: {
+                        $gte: vdateDebutResa,
+                        $lte: vdateFinResa
+                    }
+                }
+            ]
+        }
         const resa = Reservation.find(condition).count();
         console.log(resa)
-        // if(resa != 0){
-        //     throw new Error('Date or Time is already reserved. Please check another Time !!!'); 
-        // }
+        if(resa != 0){
+            throw new Error('Date or Time is already reserved. Please check another Time !!!'); 
+        }
     }catch(error){
         throw error;
     }
