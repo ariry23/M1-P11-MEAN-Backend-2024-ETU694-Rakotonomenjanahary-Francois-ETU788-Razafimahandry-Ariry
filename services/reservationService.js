@@ -282,7 +282,7 @@ async function getResaByUser(vidempl){
     }
 }
 
-async function getAllTaskDayByUser(){
+async function getAllTaskDayByUser(vidempl){
     try {
         console.log(new Date())
         let date = new Date();
