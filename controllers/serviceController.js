@@ -9,7 +9,7 @@ const Reservation = model.reservation ;
 const Paiement = model.paiement ; 
 const server = require('../bin/www');
 const WebSocket = require('ws');
-
+const nodemailer = require('nodemailer');
 async function list(req, res) {
     try { 
         let serviceList =  await Service.find({}) ;     
@@ -89,8 +89,55 @@ async function reserver(req, res) {
             nombrePersonne : req.body.nombrePersonne , 
         }) ; 
 
-        console.log(req.body) ; 
+        /* send mail logic */ 
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false , 
+        
+          auth: {
+              user: 'ariryrazafimahandr@gmail.com',
+              pass: 'soye jhww dmvi ubtl'
+          } , 
+          tls: {
+            rejectUnauthorized: false // Disable SSL certificate verification
+          }
+      });
+      
+      const mailOptions = {
+        from: 'ariryrazafimahandr@gmail.com',
+        to: 'ariryrazafimahandry@gmail.com',
+        subject: 'reservation service',
+        text: 'This is a test email sent from Express.js using Nodemailer.'
+    };
+
+    // Send the email
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.log('Error sending email:', error);
+              res.send('Error sending email');
+          } else {
+              console.log('Email sent:', info.response);
+              res.send('Email sent successfully');
+          }
+      });
+      
+      
+
+
+
+
+
+
+
+
+
+
+
+
+        //console.log(req.body) ; 
         await reservation.save() ;
+
         res.status(200).send({ "message" : "reservation créé avec success"});
     }
     catch (error) {
