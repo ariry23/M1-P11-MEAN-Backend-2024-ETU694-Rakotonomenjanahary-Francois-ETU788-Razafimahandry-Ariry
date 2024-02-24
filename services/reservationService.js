@@ -40,7 +40,9 @@ async function checkHourOfReservation(vidempl, vdateDebutResa, vdateFinResa){
                 }
             ]
         }
-        const resa = Reservation.find(condition).count();
+        console.log(vdateDebutResa)
+        console.log(vdateFinResa)
+        const resa = await Reservation.find(condition).count();
         console.log(resa)
         if(resa != 0){
             throw new Error('Date or Time is already reserved. Please check another Time !!!'); 
@@ -278,7 +280,85 @@ async function getResaByUser(vidempl){
         throw error;
     }
 }
+async function getResaByClient(vclient){
+    try {
+        console.log(vclient);
+        const histo = await Reservation.aggregate([
+            { $addFields: { "idserv": { $toObjectId: "$idserv" }}},
+            {
+                $lookup: {
+                    from: "services",
+                    localField: "idserv",
+                    foreignField: "_id",
+                    as: "serv"
+                }
+            },
+            {
+                $unwind: "$serv"
+            },
+            {
+                $project: {
+                    _id: 1,
+                    userid: 1,
+                    idempl: 1,
+                    idserv: 1,
+                    nameServ: "$serv.nom",
+                    montant: 1,
+                    dateDebutResa: { 
+                        $dateToString :{
+                            date:"$dateheureDebutReservation",
+                            format: "%d-%m-%Y %H:%M"
+                        }
+                    },
+                    dateFinResa: { 
+                        $dateToString :{
+                            date:"$dateheureFinReservation",
+                            format: "%d-%m-%Y %H:%M"
+                        }
+                    },
+                    dateResa : "$dateheureDebutReservation",
+                    dateCreatReservation: 1
+                }
+            },
+            { $addFields: { "idempl": { $toObjectId: "$idempl" }}},
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "idempl",
+                    foreignField: "_id",
+                    as: "employee"
+                }
+            },
+            {
+                $unwind: "$employee"
+            },
+            {
+                $project: {
+                    iduser: "$userid",
+                    idempl: "$idempl",
+                    idserv: "$idserv",
+                    nameServ: "$nameServ",
+                    name: "$employee.username",
+                    montant:"$montant",
+                    dateDebutResa: "$dateDebutResa",
+                    dateFinResa: "$dateFinResa",
+                    dateResa : "$dateResa",
+                    dateCreatReservation: '$dateCreatReservation'
+                }
+            },
+            {
+                $match: {
+                    iduser : vclient, 
+                    
+                }
+            },
+        ]);
 
+        return histo;
+    } catch (error) {
+        throw error;
+    }
+}
 async function getAllTaskDayByUser(vidempl){
     try {
         console.log(new Date())
@@ -415,5 +495,6 @@ module.exports = {
     reservationCAPerMonth,
     beneficePerMonth,
     getResaByUser,
-    getAllTaskDayByUser
+    getAllTaskDayByUser,
+    getResaByClient
 };

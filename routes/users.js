@@ -19,4 +19,5 @@ router.post('/edit-pref',userController.addOrUpdatePref);
 router.get('/list-pref-all',userController.getAllPreferences);
 router.post('/valid-pref',userController.validPreference);
 router.post('/reservation/customer', userController.getResaByCustomer);
+router.post('/historic', userController.getResaByClient);
 module.exports = router;

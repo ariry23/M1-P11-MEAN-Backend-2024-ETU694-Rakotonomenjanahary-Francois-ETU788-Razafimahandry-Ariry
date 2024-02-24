@@ -170,9 +170,10 @@ async function addOrUpdatePref(req, res){
 
 async function getServiceById(idServ, idclient){
     try{
-        const serviceExist = await Service.findOne({ idserv : idServ, iduser : idclient, status : 'V'});
+        const serviceExist = await preference.findOne({ idserv : idServ, iduser : idclient, status : 'V'});
         return serviceExist;
-    }catch{
+    }catch(error){
+        console.log(error)
         throw new Error('Service not found');
     }
 }

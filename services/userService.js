@@ -195,6 +195,15 @@ async function getAllPreferencesClient(req, res) {
     }
 }
 
+async function getResaByClient(req, res) {
+    try {
+        let vidclient = req.body.idclient;
+        return await reservationService.getResaByClient(vidclient);
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -210,5 +219,6 @@ module.exports = {
     getAllTaskDayByUser,
     getAllPreferencesClient,
     addOrUpdatePref,
-    getAllPreferences
+    getAllPreferences,
+    getResaByClient
 };
