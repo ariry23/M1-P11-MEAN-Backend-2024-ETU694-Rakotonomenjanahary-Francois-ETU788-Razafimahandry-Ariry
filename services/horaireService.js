@@ -275,7 +275,7 @@ async function addOrUpdateHoraire(req, res){
         if(dateDebut.getTime()>= dateFin.getTime()){
             throw new Error('Erreur horaire. Verifier s\'il vous plait');
         }
-        if(req.body._id){
+        if(req.body._id != null){
             horaire1 = await horaire.findOne({"_id" : req.body._id}) ; 
             horaire1.iduser = req.body.iduser
             horaire1.heureDebut = req.body.heureDebut ; 

@@ -22,7 +22,7 @@ var schema = new mongoose.Schema({
     duree: {
         type : Number
     },
-    description: {
+    status: {
         type : String
     }
 

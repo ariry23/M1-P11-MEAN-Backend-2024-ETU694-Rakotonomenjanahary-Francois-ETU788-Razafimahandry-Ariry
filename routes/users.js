@@ -14,4 +14,8 @@ router.post('/list-employee', userController.getResaByUser);
 router.post('/horaire',userController.addOrUpdateHoraire);
 router.post('/mon-horaire',userController.findHoraireUser);
 router.post('/taskUser',userController.getAllTaskDayByUser);
+router.post('/list-pref',userController.getAllPreferencesClient);
+router.post('/edit-pref',userController.addOrUpdatePref);
+router.get('/list-pref-all',userController.getAllPreferences);
+router.post('/valid-pref',userController.validPreference);
 module.exports = router;

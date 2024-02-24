@@ -3,6 +3,7 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const model = require('../models') ; 
 const userService = require('../services/userService');
+const preferenceService = require('../services/preferenceService')
 const User = model.user ;
 const Horaire = model.horaire; 
 async function signup(req, res) {
@@ -149,6 +150,30 @@ async function addOrUpdateHoraire(req, res) {
   }
 };
 
+async function addOrUpdatePref(req, res) {
+  try {
+      let message = await userService.addOrUpdatePref(req, res)
+      res.status(200).send({ "message" : message});
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+};
+
+async function getAllPreferences(req, res) {
+  try {
+      let message = await userService.getAllPreferences(req, res)
+      res.status(200).send({ "data" : message});
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+}
+
 async function findHoraireUser(req, res){
   try {
     let iduser = req.body.iduser;
@@ -171,6 +196,26 @@ async function getAllTaskDayByUser(req, res) {
     }
 }
 
+async function getAllPreferencesClient(req, res) {
+  try {
+      let result = await userService.getAllPreferencesClient(req, res);
+      res.status(200).send({'message': 'List pref', "data" : result});
+  } catch (error) {
+    res.status(500).send(error.message); 
+      throw error;
+  }
+}
+
+async function validPreference(req, res){
+  try {
+    let message = await preferenceService.validPref(req.body._id, req.body.status);
+    res.status(200).send({'message':  message});
+} catch (error) {
+  res.status(500).send(error.message); 
+    throw error;
+}
+}
+
 module.exports = {
   signup,
   signin, 
@@ -184,5 +229,9 @@ module.exports = {
   getResaByUser,
   addOrUpdateHoraire,
   findHoraireUser,
-  getAllTaskDayByUser
+  getAllTaskDayByUser,
+  getAllPreferencesClient,
+  addOrUpdatePref,
+  getAllPreferences,
+  validPreference
 };

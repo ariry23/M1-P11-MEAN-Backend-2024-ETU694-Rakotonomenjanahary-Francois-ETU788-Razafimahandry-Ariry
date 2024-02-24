@@ -2,6 +2,7 @@ const User = require('../models/user.model');
 const Role = require('../models/role.model');
 const reservationService = require('./reservationService');
 const horaireService = require('./horaireService');
+const preferenceService = require('./preferenceService')
 const servService = require('./servService');
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
@@ -75,8 +76,11 @@ async function getAppointment(req, res) {
         let dateDebutResa = new Date(date.getTime() - userTimezoneOffset)
         console.log(dateDebutResa);
         let heureDebutResa = dateDebutResa.getHours() + ':' + dateDebutResa.getMinutes();
-        const serv = await servService.getServiceById(idService);
-
+        let serv =  await preferenceService.getServiceById(idService, resa.userid);
+        if (serv === null || serv === undefined) {
+            serv = await servService.getServiceById(idService);
+        }
+    
         dateResa.setTime(dateResa.getTime() + serv.duree * 60 * 60 * 1000);
 
         let amount = serv.prix;
@@ -166,6 +170,31 @@ async function addOrUpdateHoraire(req, res) {
     }
 }
 
+async function addOrUpdatePref(req, res) {
+    try {
+        return await preferenceService.addOrUpdatePref(req, res);
+    } catch (error) {
+        throw error
+    }
+}
+
+
+async function getAllPreferences(req, res) {
+    try {
+        return await preferenceService.getAllPreferences(req, res);
+    } catch (error) {
+        throw error
+    }
+}
+async function getAllPreferencesClient(req, res) {
+    try {
+        let vidempl = req.body.idclient;
+        return await preferenceService.getAllPreferencesClient(vidempl);
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -178,5 +207,8 @@ module.exports = {
     beneficePerMonth,
     getResaByUser,
     addOrUpdateHoraire,
-    getAllTaskDayByUser
+    getAllTaskDayByUser,
+    getAllPreferencesClient,
+    addOrUpdatePref,
+    getAllPreferences
 };
