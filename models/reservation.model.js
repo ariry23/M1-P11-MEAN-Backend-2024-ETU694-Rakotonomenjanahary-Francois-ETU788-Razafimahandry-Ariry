@@ -29,6 +29,13 @@ const schema = mongoose.Schema({
   dateheureFinReservation: {
     type : Date
   },
+  nombrePersonne: {
+    type : Number
+  }, 
+  statusPaiement : {
+    type : String , 
+    default: "non paye"
+  }
 })
 
 var reservation = new mongoose.model('reservation', schema);

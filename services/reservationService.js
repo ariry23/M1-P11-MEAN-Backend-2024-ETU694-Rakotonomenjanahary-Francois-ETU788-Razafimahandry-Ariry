@@ -348,6 +348,62 @@ async function getAllTaskDayByUser(vidempl){
         throw error;
     }
 }
+
+
+async function getResaByUser(vidempl){
+    try {
+        console.log(new Date())
+        let date = new Date();
+        var userTimezoneOffset = date.getTimezoneOffset() * 60000;
+        let vdateResa = new Date(date.getTime()-userTimezoneOffset)
+        const Resa = await Reservation.aggregate([
+            { $addFields: { "userId": { $toObjectId: "$userid" }}},
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "customer"
+                }
+            },
+            {
+                $unwind: "$customer"
+            },
+            {
+                $project: {
+                    userid: 1,
+                    name: "$customer.username",
+                    email:"$customer.email",
+                    dateDebutResa: { 
+                        $dateToString :{
+
+                            date:"$dateheureDebutReservation",
+                            format: "%d-%m-%Y %H:%M"
+                        }
+                    },
+                    dateFinResa: { 
+                        $dateToString :{
+                            date:"$dateheureFinReservation",
+                            format: "%d-%m-%Y %H:%M"
+                        }
+                    },
+                    dateResa : "$dateheureDebutReservation",
+                }
+            },
+            {
+                $match: {
+                    userid : vuserid, 
+                    
+                }
+            },
+        ]);
+        return Resa;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
             
 module.exports = {
     addReservation,

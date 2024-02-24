@@ -12,6 +12,8 @@ const cors = require('cors');
 
 var app = express();
 app.use(cors());
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
 const corsOptions = {
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,

@@ -1,8 +1,15 @@
 
+
+const { request } = require('express');
 const model = require('../models') ; 
 const personnelService = require('../services/personnelService');
 const User = model.user ;
 const Service = model.service ; 
+const Reservation = model.reservation ; 
+const Paiement = model.paiement ; 
+const server = require('../bin/www');
+const WebSocket = require('ws');
+const nodemailer = require('nodemailer');
 async function list(req, res) {
     try { 
         let serviceList =  await Service.find({}) ;     
@@ -40,8 +47,11 @@ async function ajout(req, res) {
             prix: req.body.prix,
             commission: req.body.commission , 
             duree : req.body.duree, 
-            description : req.body.description
+            description : req.body.description , 
+           // image : req.body.image
         });
+        //console.log(req.file) ; 
+        
         await newService.save(); 
         res.status(200).send({ "message" : "Service enregistré avec success! " });
     }
@@ -67,9 +77,154 @@ async function suprimer(req, res) {
     }
 };
 
+
+async function reserver(req, res) {
+    try { 
+        console.log(req.body.dateReservation) ; 
+        const reservation = new Reservation({
+            idserv : req.body.idserv,
+            userid: req.body.userid,
+            idempl: req.body.idemploye,
+            dateReservation: new Date(req.body.dateReservation) ,
+            nombrePersonne : req.body.nombrePersonne , 
+        }) ; 
+
+        /* send mail logic */ 
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false , 
+        
+          auth: {
+              user: 'ariryrazafimahandr@gmail.com',
+              pass: 'soye jhww dmvi ubtl'
+          } , 
+          tls: {
+            rejectUnauthorized: false // Disable SSL certificate verification
+          }
+      });
+      
+      const mailOptions = {
+        from: 'ariryrazafimahandr@gmail.com',
+        to: 'ariryrazafimahandry@gmail.com',
+        subject: 'reservation service',
+        text: 'This is a test email sent from Express.js using Nodemailer.'
+    };
+
+    // Send the email
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.log('Error sending email:', error);
+              res.send('Error sending email');
+          } else {
+              console.log('Email sent:', info.response);
+              res.send('Email sent successfully');
+          }
+      });
+      
+      
+
+
+
+
+
+
+
+
+
+
+
+
+        //console.log(req.body) ; 
+        await reservation.save() ;
+
+        res.status(200).send({ "message" : "reservation créé avec success"});
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
+
+
+
+async function pay(req, res) {
+    try { 
+        let user = await User.findOne({"_id" : req.body.userid}) ; 
+        /* logique na paiement*/ 
+        const paiement = new Paiement({
+            nombrePersonne : req.body.nombrePersonne
+        }) ; 
+        await paiement.save() ;
+        res.status(200).send({ "message" : "reservation créé avec success"});
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
+
+async function offre(req, res) {
+    try { 
+        const wss = new WebSocket.Server({ server });
+
+        wss.on('connection', (ws) => {
+            console.log('Client connected');
+          
+            ws.on('message', (message) => {
+              console.log(`Received message: ${message}`);
+          
+              // Example: Broadcast the received message to all clients
+              wss.clients.forEach((client) => {
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                  client.send(message);
+                }
+              });
+            });
+          
+            ws.on('close', () => {
+              console.log('Client disconnected');
+            });
+          });
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
+
+async function listPay(req, res) {
+    try { 
+        console.log(req.body.dateReservation) ; 
+        const reservation = new Reservation({
+            idserv : req.body.idserv,
+            userid: req.body.userid,
+            idempl: req.body.idemploye,
+            dateReservation: new Date(req.body.dateReservation) ,
+            nombrePersonne : req.body.nombrePersonne , 
+        }) ; 
+
+        console.log(req.body) ; 
+        await reservation.save() ;
+        res.status(200).send({ "message" : "reservation créé avec success"});
+    }
+    catch (error) {
+      console.log(error);
+      res.status(500).send(error.message); 
+      return;
+    }
+};
+
+
 module.exports = {
     list , 
     update , 
     ajout , 
-    suprimer
+    suprimer , 
+    reserver , 
+    pay , 
+    offre
 };

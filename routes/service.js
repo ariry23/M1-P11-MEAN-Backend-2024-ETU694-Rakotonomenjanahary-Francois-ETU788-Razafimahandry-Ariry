@@ -5,4 +5,7 @@ router.get('/list', serviceController.list);
 router.post('/management/update', serviceController.update);
 router.post('/management/ajout', serviceController.ajout);
 router.delete('/management/delete/:id', serviceController.suprimer);
+router.post('/reserver', serviceController.reserver);
+router.post('/paiement/creer', serviceController.pay);
+router.post('/offre', serviceController.offre);
 module.exports = router;

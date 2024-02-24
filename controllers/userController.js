@@ -3,9 +3,11 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 const model = require('../models') ; 
 const userService = require('../services/userService');
-const preferenceService = require('../services/preferenceService')
-const User = model.user ;
+const preferenceService = require('../services/preferenceService');
 const Horaire = model.horaire; 
+const User = model.user ; 
+const Service = model.service ; 
+const Reservation = model.reservation ;
 async function signup(req, res) {
     try { 
       let user = req.body ; 
@@ -179,6 +181,86 @@ async function findHoraireUser(req, res){
     let iduser = req.body.iduser;
     let result =  await Horaire.findOne({'iduser': iduser})
     res.status(200).send({'message': 'Horaire personnel', "data" : result});
+  }
+ catch (error) {
+  console.log(error);
+  res.status(500).send(error.message); 
+  return;
+}
+}
+
+async function getResaByCustomer(req, res ){
+  try {
+    let reservationList =  await Reservation.aggregate([
+      { $addFields: { "idempl": { $toObjectId: "$idempl" }}},
+    
+      {
+          $lookup: {
+              from: "users",
+              localField: "idempl",
+              foreignField: "_id",
+              as: "customer"
+          }
+      },
+      {
+          $unwind: "$customer"
+      },
+      {
+          $project: {
+              idempl: 1,
+              idserv:1 , 
+              name: "$customer.username",
+              email:"$customer.email",
+              /*dateDebutResa: { 
+                  $dateToString :{
+                      date:"$dateheureDebutReservation",
+                      format: "%d-%m-%Y %H:%M"
+                  }
+              },
+              dateFinResa: { 
+                  $dateToString :{
+                      date:"$dateheureFinReservation",
+                      format: "%d-%m-%Y %H:%M"
+                  }
+              }, */
+          }
+      },
+      { $addFields: { "idserv": { $toObjectId: "$idserv" }}},
+      {
+        $lookup: {
+            from: "services",
+            localField: "idserv",
+            foreignField: "_id",
+            as: "services"
+          }
+      },
+      {
+          $unwind: "$service"
+      },
+      {
+        $project: {
+            idempl: 1,
+            name: "$username",
+            email:"$email",
+           /* dateDebutResa: "$dateDebutResa",
+            dateFinResa: "$dateFinResa" , */
+      
+        }
+    },/*
+      {
+          $match: {
+              userid : req.body.userid, 
+          }
+      },*/
+  ]);
+
+
+
+
+
+    
+    //console.log(reservationList) ; 
+    res.status(200).send({ "message" : "Liste des reservations du client" , "data" : reservationList });
   } catch (error) {
     console.log(error);
     res.status(500).send(error.message); 
@@ -216,6 +298,7 @@ async function validPreference(req, res){
 }
 }
 
+
 module.exports = {
   signup,
   signin, 
@@ -233,5 +316,7 @@ module.exports = {
   getAllPreferencesClient,
   addOrUpdatePref,
   getAllPreferences,
-  validPreference
+  validPreference , 
+  getResaByCustomer
 };
+ 
