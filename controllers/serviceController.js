@@ -10,6 +10,19 @@ const Paiement = model.paiement ;
 const server = require('../bin/www');
 const WebSocket = require('ws');
 const nodemailer = require('nodemailer');
+const fs = require('fs');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Specify the directory where files will be stored
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname); // Specify the filename
+  }
+});
+
+const upload = multer({ storage: storage });
 async function list(req, res) {
     try { 
         let serviceList =  await Service.find({}) ;     
@@ -40,7 +53,32 @@ async function update(req, res) {
     }
 };
 
+
 async function ajout(req, res) {
+  try {
+      if (!req.file) {
+          return res.status(400).send('No file uploaded.');
+      }
+
+      // File is stored in req.file
+      const uploadedFile = req.file;
+
+      // Perform necessary logic with the uploaded file
+      // For example, you can move the file to a different directory
+      const newPath = 'uploads/' + uploadedFile.filename;
+      fs.renameSync(uploadedFile.path, newPath);
+
+      // Respond with success message
+      res.status(200).send({ message: "File uploaded successfully.", filename: uploadedFile.filename });
+  } catch (error) {
+      console.error(error);
+      res.status(500).send(error.message);
+  }
+}
+
+
+
+/*async function ajout(req, res) {
     try { 
         const newService = new Service({
             nom: req.body.nom,
@@ -60,7 +98,7 @@ async function ajout(req, res) {
       res.status(500).send(error.message); 
       return;
     }
-};
+};*/
 
 
 async function suprimer(req, res) {
@@ -85,10 +123,13 @@ async function reserver(req, res) {
             idserv : req.body.idserv,
             userid: req.body.userid,
             idempl: req.body.idemploye,
-            dateReservation: new Date(req.body.dateReservation) ,
+            dateheureDebutReservation: new Date(req.body.dateReservation) ,
             nombrePersonne : req.body.nombrePersonne , 
         }) ; 
 
+
+        let user = await User.findOne({"_id" : req.body.userid }) ; 
+        let service = await Service.findOne({"_id" : req.body.idserv}) ; 
         /* send mail logic */ 
         const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
@@ -100,15 +141,15 @@ async function reserver(req, res) {
               pass: 'soye jhww dmvi ubtl'
           } , 
           tls: {
-            rejectUnauthorized: false // Disable SSL certificate verification
+            rejectUnauthorized: false 
           }
       });
       
       const mailOptions = {
         from: 'ariryrazafimahandr@gmail.com',
-        to: 'ariryrazafimahandry@gmail.com',
-        subject: 'reservation service',
-        text: 'This is a test email sent from Express.js using Nodemailer.'
+        to: user.email,
+        subject: 'reservation du service ' + service.nom  ,
+        text: 'Vous vennez de reserver le service ' + service.nom + ' pour le ' + new Date(req.body.dateReservation)
     };
 
     // Send the email
