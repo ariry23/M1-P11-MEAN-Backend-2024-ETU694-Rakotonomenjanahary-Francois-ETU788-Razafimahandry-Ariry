@@ -336,14 +336,22 @@ async function  getAccountAdmin(req, res) {
   try {
     console.log(req.body) ; 
     let transactions = model.paiement ; 
-    let paiements = await Paiement.find({}) ; 
+    let paiements = await Paiement.aggregate([
+        {
+          $group: {
+            _id: "$service",
+            solde: {
+              $sum: "$montant"
+            }
+          }
+        }
+      ])
     data = {
       solde : 0 , 
       transactions : paiements
     } ; 
 
-
-    res.status(200).send({ 'message': 'Historique client' , "data" : data});
+    res.status(200).send({ 'message': 'Solde account admin par service' , "data" : paiements});
   } catch (error) {
     res.status(500).send(error.message);
     throw error;
