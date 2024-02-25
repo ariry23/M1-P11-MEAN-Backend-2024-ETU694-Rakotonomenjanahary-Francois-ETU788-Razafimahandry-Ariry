@@ -8,6 +8,7 @@ const Horaire = model.horaire;
 const User = model.user;
 const Service = model.service;
 const Reservation = model.reservation;
+const Paiement = model.paiement;
 async function signup(req, res) {
   try {
     let user = req.body;
@@ -308,6 +309,47 @@ async function getResaByClient(req, res) {
   }
 }
 
+
+
+async function  getAccount(req, res) {
+  try {
+    console.log(req.body) ;
+    let userName = req.body.userName ; 
+    let paiements = await Paiement.find({"sender" : userName})
+    let user =await User.findOne({"_id" :req.body.userId })
+    data = {
+      solde : user.solde  , 
+      transactions : paiements
+    }
+
+
+    res.status(200).send({ 'message': 'account' , "data" : data });
+  } catch (error) {
+    res.status(500).send(error.message);
+    throw error;
+  }
+}
+
+
+
+async function  getAccountAdmin(req, res) {
+  try {
+    console.log(req.body) ; 
+    let transactions = model.paiement ; 
+    let paiements = await Paiement.find({}) ; 
+    data = {
+      solde : 0 , 
+      transactions : paiements
+    } ; 
+
+
+    res.status(200).send({ 'message': 'Historique client' , "data" : data});
+  } catch (error) {
+    res.status(500).send(error.message);
+    throw error;
+  }
+}
+
 module.exports = {
   signup,
   signin,
@@ -327,6 +369,8 @@ module.exports = {
   getAllPreferences,
   validPreference,
   getResaByCustomer,
-  getResaByClient
+  getResaByClient ,
+  getAccount , 
+  getAccountAdmin
 };
 

@@ -192,13 +192,30 @@ async function reserver(req, res) {
 
 async function pay(req, res) {
     try { 
-        let user = await User.findOne({"_id" : req.body.userid}) ; 
+        let user = await User.findOne({"_id" : req.body.iduser}) ; 
         /* logique na paiement*/ 
         const paiement = new Paiement({
-            nombrePersonne : req.body.nombrePersonne
+            service: req.body.nameServ, 
+            nombrePersonne : req.body.nombrePersonne , 
+            sender : req.body.userName ,
+            receiver : "admin"  , 
+            montant : req.body.prixServ * req.body.nombrePersonne
         }) ; 
+
+        if(user.solde <  req.body.prixServ * req.body.nombrePersonne)
+        {
+          throw new Error("Solde insuffisant");
+        }
+        console.log(user) ; 
+        let updatedSole = user.solde - ( req.body.prixServ * req.body.nombrePersonne) ; 
+        user.solde =  updatedSole ; 
+        let reservation = await Reservation.findOne({"_id" : req.body._id}) ; 
+        reservation.statusPaiement = "paye" ; 
+        await reservation.save() ; 
+        await user.save() ; 
         await paiement.save() ;
-        res.status(200).send({ "message" : "reservation créé avec success"});
+
+        res.status(200).send({ "message" : "Transaction réussi"});
     }
     catch (error) {
       console.log(error);

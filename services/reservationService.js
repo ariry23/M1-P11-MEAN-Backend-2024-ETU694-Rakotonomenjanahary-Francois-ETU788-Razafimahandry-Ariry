@@ -302,7 +302,10 @@ async function getResaByClient(vclient){
                     userid: 1,
                     idempl: 1,
                     idserv: 1,
+                    nombrePersonne: 1,
+                    statusPaiement: 1,
                     nameServ: "$serv.nom",
+                    prixServ :  "$serv.prix" , 
                     montant: 1,
                     dateDebutResa: { 
                         $dateToString :{
@@ -334,6 +337,8 @@ async function getResaByClient(vclient){
             },
             {
                 $project: {
+                    nombrePersonne: "$nombrePersonne",
+                    statusPaiement: "$statusPaiement",
                     iduser: "$userid",
                     idempl: "$idempl",
                     idserv: "$idserv",
@@ -343,7 +348,8 @@ async function getResaByClient(vclient){
                     dateDebutResa: "$dateDebutResa",
                     dateFinResa: "$dateFinResa",
                     dateResa : "$dateResa",
-                    dateCreatReservation: '$dateCreatReservation'
+                    dateCreatReservation: '$dateCreatReservation' , 
+                    prixServ : '$prixServ'
                 }
             },
             {

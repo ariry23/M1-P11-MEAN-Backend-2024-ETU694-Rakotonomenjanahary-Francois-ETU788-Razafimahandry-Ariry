@@ -20,4 +20,6 @@ router.get('/list-pref-all',userController.getAllPreferences);
 router.post('/valid-pref',userController.validPreference);
 router.post('/reservation/customer', userController.getResaByCustomer);
 router.post('/historic', userController.getResaByClient);
+router.post('/account', userController.getAccount);
+router.post('/account/admin', userController.getAccountAdmin); 
 module.exports = router;
