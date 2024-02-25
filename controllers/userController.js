@@ -339,7 +339,7 @@ async function  getAccountAdmin(req, res) {
     let paiements = await Paiement.aggregate([
         {
           $group: {
-            _id: "$service",
+            _id: null,
             solde: {
               $sum: "$montant"
             }
