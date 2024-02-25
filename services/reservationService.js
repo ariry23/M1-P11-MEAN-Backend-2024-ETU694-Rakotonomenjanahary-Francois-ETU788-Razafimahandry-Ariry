@@ -1,7 +1,7 @@
 
 const Reservation = require('../models/reservation.model') ;
 
-async function addReservation(reservation, dateDebutResa,  dateheureFinRes, amount, amountCommission) {
+async function addReservation(reservation, dateDebutResa,  dateheureFinRes, amount, amountCommission , nbPersonne) {
     try {
         const resa  =  new Reservation({
             idserv : reservation.idserv,
@@ -10,7 +10,9 @@ async function addReservation(reservation, dateDebutResa,  dateheureFinRes, amou
             montant : amount,
             montantcommissionEmpl : amountCommission,
             dateheureFinReservation : dateheureFinRes,
-            dateheureDebutReservation : dateDebutResa
+            dateheureDebutReservation : dateDebutResa , 
+            nombrePersonne : nbPersonne
+
         });
         await resa.save();
         return "Appointment Successfully";

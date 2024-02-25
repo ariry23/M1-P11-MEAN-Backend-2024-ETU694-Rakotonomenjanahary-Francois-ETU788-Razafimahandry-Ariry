@@ -89,7 +89,7 @@ async function getAppointment(req, res) {
         let heureFinResa = dateResa.getHours() + ':' + dateResa.getMinutes();
         await reservationService.checkHourOfReservation(idemploye, dateDebutResa, hourEndResa)
         await horaireService.checkHourOfUserEmploye(idemploye, heureDebutResa, heureFinResa, dateDebutResa)
-        var message = await reservationService.addReservation(resa, dateDebutResa, hourEndResa, amount, amountCommission);
+        var message = await reservationService.addReservation(resa, dateDebutResa, hourEndResa, amount, amountCommission , req.body.nbPersonne);
         return message;
     } catch (error) {
         throw error;

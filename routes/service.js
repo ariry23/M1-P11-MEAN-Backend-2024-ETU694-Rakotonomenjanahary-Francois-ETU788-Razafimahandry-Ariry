@@ -21,4 +21,5 @@ router.delete('/management/delete/:id', serviceController.suprimer);
 router.post('/reserver', serviceController.reserver);
 router.post('/paiement/creer', serviceController.pay);
 router.post('/offre', serviceController.offre);
+router.post('/search', serviceController.search);
 module.exports = router;

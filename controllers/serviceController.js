@@ -35,6 +35,28 @@ async function list(req, res) {
     }
 };
 
+async function search(req, res) {
+  try { 
+    console.log(req.body.search);
+    let data = [] ; 
+      if(req.body.search === null || req.body.search === "")
+      {
+        
+          data = await Service.find({}) ;     
+      }
+      else{
+      
+        data = await Service.find({ nom: { $regex: req.body.search, $options: 'i' } });
+      }
+
+      res.status(200).send({ "message" : "Liste des services" , "data" : data });    
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500).send(error.message); 
+    return;
+  }
+};
 
 async function update(req, res) {
     try { 
@@ -59,15 +81,27 @@ async function ajout(req, res) {
       if (!req.file) {
           return res.status(400).send('No file uploaded.');
       }
+       
+    
 
+    console.log(req.body) ; 
+    //console.log(newService) ; 
       // File is stored in req.file
       const uploadedFile = req.file;
 
       // Perform necessary logic with the uploaded file
       // For example, you can move the file to a different directory
       const newPath = 'uploads/' + uploadedFile.filename;
+      newService = new Service({
+        nom: req.body.nom,
+        prix: req.body.prix,
+        commission: req.body.commission , 
+        duree : req.body.duree, 
+        image : uploadedFile.filename
+       // image : req.body.image
+    }); 
       fs.renameSync(uploadedFile.path, newPath);
-
+      await newService.save(); 
       // Respond with success message
       res.status(200).send({ message: "File uploaded successfully.", filename: uploadedFile.filename });
   } catch (error) {
@@ -284,5 +318,6 @@ module.exports = {
     suprimer , 
     reserver , 
     pay , 
-    offre
+    offre , 
+    search
 };
