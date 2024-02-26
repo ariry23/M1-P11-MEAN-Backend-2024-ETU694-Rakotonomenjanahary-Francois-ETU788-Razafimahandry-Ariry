@@ -1,8 +1,10 @@
 const horaire = require('../models/horaire.model');
+const jour = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
 
 async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
+    
+    var numberDate =  dateResa.getDay();
     try{
-        var numberDate =  dateResa.getDay();
         console.log(numberDate)
         const usrHour = await  horaire.aggregate([
             {
@@ -49,7 +51,7 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
         ])
         console.log(usrHour)
         if(usrHour.length == 0){
-            throw new Error('Check another hours  our this date is weekend')
+            throw new Error('Cette heure n\'est pas disponible dans la plage horaire ou le jour '+ jour[numberDate]+' est ferie pour cet employe')
         }
 
         

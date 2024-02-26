@@ -47,7 +47,7 @@ async function checkHourOfReservation(vidempl, vdateDebutResa, vdateFinResa){
         const resa = await Reservation.find(condition).count();
         console.log(resa)
         if(resa != 0){
-            throw new Error('Date or Time is already reserved. Please check another Time !!!'); 
+            throw new Error('Date et heure deja reservee . Veuillez choisir une autre date et heure !!!'); 
         }
     }catch(error){
         throw error;
