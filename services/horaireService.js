@@ -5,53 +5,77 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
     
     var numberDate =  dateResa.getDay();
     try{
-        console.log(numberDate)
+        console.log(vidempl)
+        
         const usrHour = await  horaire.aggregate([
+            { 
+                $addFields: { 
+                    dateDebut: { 
+                        $dateFromString: {
+                            dateString: { 
+                                $concat: ['1970-01-01T',"$heureDebut"] 
+                            },
+                            format: "%Y-%m-%dT%H:%M",
+                            timezone: "+00:00"
+                        } 
+                    } 
+                } 
+            },
+            { 
+                $addFields: { 
+                    dateFin: { 
+                        $dateFromString: {
+                            dateString: { 
+                                $concat: ['1970-01-01T',"$heureFin"] 
+                            },
+                            format: "%Y-%m-%dT%H:%M",
+                            timezone: "+00:00"
+                        } 
+                    } 
+                } 
+            },
             {
                 $project: {
                     iduser: '$iduser',
                     jour: '$jour',
-                    heureDebut: {
-                        $dateFromString: {
-                            dateString: { $concat: ['1970-01-01T',"$heureDebut"] },
-                            format: "%Y-%m-%dT%H:%M",
-                            timezone: "+00:00"
-                        }
-                    },
-                    heureFin: {
-                        $dateFromString: {
-                            dateString: {  $concat: ['1970-01-01T',"$heureFin"] },
-                            format: "%Y-%m-%dT%H:%M",
-                            timezone: "+00:00"
-                        }
-                    },
+                    dateDebut: '$dateDebut',
+                    dateFin:'$dateFin',
                 }
             },
             {
                 $match: {
-                    iduser : vidempl, 
-                    heureDebut: {
-                        $lte: new Date("1970-01-01T"+hoursDebut+":00Z")
-                    },
-                    heureFin:{
-                         $gte: new Date("1970-01-01T"+hoursFin+":00Z")
-                    },
-                    jour : { $regex : '.*' + numberDate + '.*'}
+                    
+                //     heureDebut: {
+                //         $lte: new Date("1970-01-01T"+hoursDebut+":00Z")
+                //     },
+                //     heureFin:{
+                //          $gte: new Date("1970-01-01T"+hoursFin+":00Z")
+                //     },
+                    
+                    $and: [
+                    { iduser : vidempl },
+                    { jour : { $regex : '.*' + numberDate + '.*'}},
+                    { dateDebut: { $lte: new Date("1970-01-01T"+hoursDebut+":00Z") } },
+                    { dateFin: { $gte: new Date("1970-01-01T"+hoursFin+":00Z") } }
+                    ]
                 }
+                
+                
             },
             {
                 $project: {
                     _id: 1,
-                    heureDebut: 1,
-                    heureFin: 1,
+                    dateDebut: 1,
+                    dateFin: 1,
                     iduser: 1,
                     jour: 1
                 }
             }
         ])
+        console.log(new Date("1970-01-01T"+hoursDebut+":00Z"))
         console.log(usrHour)
         if(usrHour.length == 0){
-            throw new Error('Cette heure n\'est pas disponible dans la plage horaire ou le jour '+ jour[numberDate]+' est ferie pour cet employe')
+            throw new Error('L\'heure ou le jour '+jour[numberDate]+' que vous avez choisi ne fait pas partie de l\'horaire et le jour de travail de cet l\'employe ')
         }
 
         
