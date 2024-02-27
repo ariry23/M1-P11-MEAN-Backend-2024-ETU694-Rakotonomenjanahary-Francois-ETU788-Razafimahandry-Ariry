@@ -1,5 +1,5 @@
 const horaire = require('../models/horaire.model');
-const jour = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
+const jour = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 
 async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
     
