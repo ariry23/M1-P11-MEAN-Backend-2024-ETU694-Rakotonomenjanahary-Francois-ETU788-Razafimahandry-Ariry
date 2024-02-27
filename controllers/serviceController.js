@@ -15,7 +15,7 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Specify the directory where files will be stored
+    cb(null, 'public/images'); // Specify the directory where files will be stored
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname); // Specify the filename
@@ -91,7 +91,7 @@ async function ajout(req, res) {
 
       // Perform necessary logic with the uploaded file
       // For example, you can move the file to a different directory
-      const newPath = 'uploads/' + uploadedFile.filename;
+      const newPath = 'public/images' + uploadedFile.filename;
       newService = new Service({
         nom: req.body.nom,
         prix: req.body.prix,

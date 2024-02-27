@@ -20,7 +20,7 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 app.options('*', cors(corsOptions));
-
+app.use('/images', express.static(path.join(__dirname, 'public/images')));
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:4200'); // Remplacez par l'origine de votre application Angular
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
