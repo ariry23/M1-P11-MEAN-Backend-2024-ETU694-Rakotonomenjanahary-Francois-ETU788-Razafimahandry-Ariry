@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const Role = require('../models/role.model');
+const horaire = require('../models/horaire.model');
 var bcrypt = require("bcryptjs");
 const config = require('../configuration/auth.config');
 var bcrypt = require("bcryptjs");
@@ -19,8 +20,14 @@ async function ajout(req, res) {
             });
             const role = await Role.findOne({name : "employee"}) ; 
             newUser.role = role._id ; 
-            await newUser.save();
-
+            let userCreated = await newUser.save();
+            let horaire1 = new horaire({
+                iduser: userCreated._id,
+                heureDebut: '07:30' ,
+                heureFin: '17:30',
+                jour: '1,2,3,4,5'
+            });
+            await horaire1.save();
             return 'Personnel registered successfully';
         }
         throw new Error("Password and password confirmation don't match");

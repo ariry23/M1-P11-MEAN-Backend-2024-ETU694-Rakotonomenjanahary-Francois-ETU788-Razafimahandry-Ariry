@@ -75,7 +75,7 @@ async function getAppointment(req, res) {
         let dateResa = new Date(date.getTime() - userTimezoneOffset)
         let dateDebutResa = new Date(date.getTime() - userTimezoneOffset)
         console.log(dateDebutResa);
-        let heureDebutResa = dateDebutResa.getHours() + ':' + dateDebutResa.getMinutes();
+        let heureDebutResa = dateDebutResa.getHours()-3 + ':' + dateDebutResa.getMinutes();
         let serv =  await preferenceService.getServiceById(idService, resa.userid);
         if (serv === null || serv === undefined) {
             serv = await servService.getServiceById(idService);
@@ -86,7 +86,7 @@ async function getAppointment(req, res) {
         let amount = serv.prix;
         let amountCommission = (amount * serv.commission) / 100;
         let hourEndResa = dateResa;
-        let heureFinResa = dateResa.getHours() + ':' + dateResa.getMinutes();
+        let heureFinResa = dateResa.getHours()-3 + ':' + dateResa.getMinutes();
         await reservationService.checkHourOfReservation(idemploye, dateDebutResa, hourEndResa)
         await horaireService.checkHourOfUserEmploye(idemploye, heureDebutResa, heureFinResa, dateDebutResa)
         var message = await reservationService.addReservation(resa, dateDebutResa, hourEndResa, amount, amountCommission , req.body.nbPersonne);
