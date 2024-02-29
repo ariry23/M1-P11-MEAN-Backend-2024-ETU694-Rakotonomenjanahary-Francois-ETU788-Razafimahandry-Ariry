@@ -21,13 +21,13 @@ const corsOptions = {
 };
 app.options('*', cors(corsOptions));
 app.use('/images', express.static(path.join(__dirname, 'public/images')));
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://login-d7e94.web.app'); // Remplacez par l'origine de votre application Angular
+/*app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://login-d7e94.web.app'); 
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true'); // Si votre application envoie des cookies ou des informations d'identification
+  res.header('Access-Control-Allow-Credentials', 'true'); 
   next();
-});
+}); */
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
