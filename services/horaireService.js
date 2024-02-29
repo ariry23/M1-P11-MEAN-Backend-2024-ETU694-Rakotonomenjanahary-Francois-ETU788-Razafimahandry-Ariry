@@ -75,7 +75,8 @@ async function checkHourOfUserEmploye(vidempl, hoursDebut, hoursFin, dateResa){
         console.log(new Date("1970-01-01T"+hoursDebut+":00Z"))
         console.log(usrHour)
         if(usrHour.length == 0){
-            throw new Error('L\'heure ou le jour '+jour[numberDate]+' que vous avez choisi ne fait pas partie de l\'horaire et le jour de travail de cet l\'employe ')
+           // throw new Error('L\'heure ou le jour '+jour[numberDate]+' que vous avez choisi ne fait pas partie de l\'horaire et le jour de travail de cet l\'employe ')
+            console.log("get an exception") ; 
         }
 
         
